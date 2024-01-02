@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "fmri2image_alignment"
+description = "A package for fMRI to image reconstruction using functional alignment"
+authors = [
+  {name = "Pierre-Louis Barbarant", email = "pierre-louis.barbarant@inria.fr"},
+]
+readme = "README.md"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy>=1.20",
+    "matplotlib>=3.7",
+    "scikit-learn>=1.2",
+    "scikit-image>=0.20",
+    "torch>=2.1.0",
+    "tqdm>=4.62",
+    "Pillow>=9.5",
+    "pyraug>=0.0.6",
+    "pythae>=0.1.2",
+    "diffusers>=0.25.0",
+    "datasets>=2.16.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.1",
+  "pre-commit>=2.0",
+]
+
+[project.urls]
+homepage = "https://github.com/pbarbarant/fmri2image_alignment"
+repository = "https://github.com/pbarbarant/fmri2image_alignment.git"
