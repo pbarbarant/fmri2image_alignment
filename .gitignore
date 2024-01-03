@@ -165,3 +165,6 @@ data/NSD/unaligned/3mm/
 data/BOLD5000/unaligned/images/
 data/BOLD5000/unaligned/3mm/
 data/COCO/
+
+# Metadata
+data/NSD/nsd_stim_info_merged.csv
