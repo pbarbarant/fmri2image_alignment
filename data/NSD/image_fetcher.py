@@ -29,7 +29,7 @@ def fetch_and_process_images(metadata, output_dir):
         cropBox = eval(metadata.loc[idx, "cropBox"])
 
         # Open the image
-        coco_path = f"/storage/store3/work/pbarbara/fmri2image_alignment/data/COCO/{cocoSplit}/{cocoId:012d}.jpg"
+        coco_path = f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/COCO/{cocoSplit}/{cocoId:012d}.jpg"
         img = Image.open(coco_path)
 
         # Get the crop box
