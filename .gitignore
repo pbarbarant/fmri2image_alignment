@@ -161,6 +161,7 @@ cython_debug/
 
 # Datasets
 data/NSD/stimuli/
+data/NSD/alignment_data/
 data/COCO/
 
 # Metadata
