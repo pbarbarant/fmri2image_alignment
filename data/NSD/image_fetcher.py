@@ -58,7 +58,7 @@ if __name__ == "__main__":
     metadata = retrieve_metadata(metadata_path, metadata_output)
 
     output_dir = Path(
-        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/unaligned/images"
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/stimuli"
     )
     if not output_dir.exists():
         os.makedirs(output_dir)
