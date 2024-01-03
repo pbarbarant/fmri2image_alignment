@@ -160,10 +160,7 @@ cython_debug/
 #.idea/
 
 # Datasets
-data/NSD/unaligned/images/
-data/NSD/unaligned/3mm/
-data/BOLD5000/unaligned/images/
-data/BOLD5000/unaligned/3mm/
+data/NSD/stimuli/
 data/COCO/
 
 # Metadata
