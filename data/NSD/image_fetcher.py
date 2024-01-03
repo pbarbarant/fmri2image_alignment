@@ -3,8 +3,6 @@ from pathlib import Path
 import os
 import shutil
 from tqdm import tqdm
-import numpy as np
-import json
 from PIL import Image
 import pandas as pd
 
@@ -19,9 +17,6 @@ def retrieve_metadata(metadata_path, metadata_output):
 
     # Open the metadata file
     metadata = pd.read_csv(metadata_output)
-
-    # Keep only the rows where shared1000 is True
-    metadata = metadata[metadata.shared1000 == True]
 
     return metadata
 
@@ -39,7 +34,6 @@ def fetch_and_process_images(metadata, output_dir):
 
         # Get the crop box
         width, height = img.size
-        img_center = (img.width // 2, img.height // 2)
         crop_left = width * cropBox[2]
         crop_right = width * (1 - cropBox[3])
         crop_top = height * cropBox[0]
