@@ -43,7 +43,7 @@ def get_contratst(sub, it, idx):
 
 def subject_wrapper(sub):
     stack = []
-    for it, idx in enumerate(idx_shared1000[:10]):
+    for it, idx in enumerate(idx_shared1000[]):
         if it % 100 == 0:
             print(
                 f"Processing image {it} out of {len(idx_shared1000)} for {sub}\n"
