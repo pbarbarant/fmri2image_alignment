@@ -5,20 +5,7 @@ import shutil
 from tqdm import tqdm
 from PIL import Image
 import pandas as pd
-
-
-def retrieve_metadata(metadata_path, metadata_output):
-    # Check if the file exists
-    if not metadata_path.exists():
-        raise FileNotFoundError("NSD metadata file not found.")
-
-    # Use shutil to copy the file
-    shutil.copy(src=metadata_path, dst=metadata_output)
-
-    # Open the metadata file
-    metadata = pd.read_csv(metadata_output)
-
-    return metadata
+from utils import retrieve_metadata
 
 
 def fetch_and_process_images(metadata, output_dir):
@@ -49,13 +36,13 @@ def fetch_and_process_images(metadata, output_dir):
 
 
 if __name__ == "__main__":
-    metadata_path = Path(
+    metadata_source = Path(
         "/data/parietal/store3/data/natural_scenes/info/nsd_stim_info_merged.csv"
     )
-    metadata_output = Path(
+    metadata_target = Path(
         "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
     )
-    metadata = retrieve_metadata(metadata_path, metadata_output)
+    metadata = retrieve_metadata(metadata_source, metadata_target)
 
     output_dir = Path(
         "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/stimuli"
