@@ -55,7 +55,7 @@ if __name__ == "__main__":
     metadata_output = Path(
         "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
     )
-    metadata = retrieve_metadata(metadata_path)
+    metadata = retrieve_metadata(metadata_path, metadata_output)
 
     output_dir = Path(
         "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/unaligned/images"
