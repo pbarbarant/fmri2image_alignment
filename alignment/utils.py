@@ -1,7 +1,6 @@
 import torch
 import numpy as np
 from fugw.mappings import FUGW, FUGWSparse
-from fugw.utils import load_mapping, save_mapping
 from fugw.scripts import coarse_to_fine, lmds
 from nilearn import masking
 
@@ -90,7 +89,7 @@ class FugwAlignment:
             segmentation,
             k=12,
             n_landmarks=1000,
-            anisotropy=(3, 3, 3),
+            anisotropy=(2, 2, 2),
             verbose=verbose,
         ).nan_to_num()
         target_geometry_embeddings = source_geometry_embeddings.clone()
@@ -212,23 +211,3 @@ class FugwAlignment:
         else:
             transformed_features = self.mapping.transform(features)
         return self.masker.inverse_transform(transformed_features)
-
-    def save_mapping(self, mapping_path):
-        """Save the fitted mapping
-
-        Parameters
-        ----------
-        saving_dir : str
-            Directory where to save the mapping
-        """
-        save_mapping(self.mapping, str(mapping_path))
-
-    def load_mapping(self, mapping_path):
-        """Load the fitted mapping
-
-        Parameters
-        ----------
-        mapping_path : str
-            Path to the mapping
-        """
-        self.mapping = load_mapping(str(mapping_path))
