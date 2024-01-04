@@ -2,14 +2,18 @@
 import os
 from pathlib import Path
 from utils import FugwAlignment
-from nilearn import maskers, masking, datasets, plotting
+from nilearn import maskers, masking, datasets, image
+from fugw.utils import load_mapping, save_mapping
 import nibabel as nib
 import numpy as np
+from joblib import Memory
 
 # Download MNI152 template
-mni152_mask = datasets.fetch_icbm152_brain_gm_mask()
+mni152_mask = nib.load(
+    "/storage/store2/work/tbazeill/cneuromod_wm_5mm/gm_visual_mask.nii.gz"
+)
 connected_mask = masking.compute_background_mask(mni152_mask, connected=True)
-masker = maskers.NiftiMasker(connected_mask).fit()
+masker = maskers.NiftiMasker(connected_mask, memory=Memory()).fit()
 
 
 def compute_pairwise_mapping(source, target, masker, mapping_path):
@@ -34,7 +38,7 @@ def compute_pairwise_mapping(source, target, masker, mapping_path):
     alignment.fit(source, target)
 
     # Save mapping
-    alignment.save_mapping(mapping_path)
+    save_mapping(alignment.mapping, mapping_path)
 
 
 def load_subject_NSD(subject, verbose=True):
@@ -84,4 +88,4 @@ if __name__ == "__main__":
 
         mapping_path = saving_dir / f"{source}_{target}.pkl"
 
-        compute_pairwise_mapping(source_img, target_img, masker, saving_dir)
+        compute_pairwise_mapping(source_img, target_img, masker, mapping_path)
