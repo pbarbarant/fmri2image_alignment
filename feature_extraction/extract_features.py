@@ -7,20 +7,16 @@ from utils import (
     compute_transformed_features_ica,
     compute_transformed_features_pca,
     load_mapping_from_path,
-    load_visual_mask,
     project_on_target,
     save_features,
 )
 
 if __name__ == "__main__":
-    # Load visual mask
-    masker = load_visual_mask()
-
     # Load features
     target = "sub-01"
     sources = [f"sub-0{i}" for i in range(2, 9)]
     path_to_mapping_folder = Path(
-        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/alignment/mappings"
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/alignment/mappings"
     )
     assert path_to_mapping_folder.exists(), "Mappings folder does not exist"
 
@@ -31,8 +27,8 @@ if __name__ == "__main__":
         mapping = load_mapping_from_path(
             source, target, path_to_mapping_folder
         )
-        source_features = masker.transform(
-            f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{source}_shared1000.nii.gz"
+        source_features = np.load(
+            f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{source}_shared1000.npy"
         )
         projected_source = project_on_target(source_features, mapping)
 
