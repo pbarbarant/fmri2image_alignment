@@ -35,4 +35,4 @@ if __name__ == "__main__":
     output_folder = Path(
         f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/pca_unaligned"
     )
-    save_pca(pca, output_folder)
+    save_pca(pca, transformed_features, output_folder)
