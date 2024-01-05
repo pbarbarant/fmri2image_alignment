@@ -105,10 +105,6 @@ class FugwAlignment:
         if verbose:
             print("Embeddings computed")
 
-        # Normalize embeddings
-        # source_embeddings_normalized /= self.degree
-        # target_embeddings_normalized /= self.degree
-
         # Subsample vertices as uniformly as possible on the surface
         source_sample = coarse_to_fine.sample_volume_uniformly(
             segmentation,
@@ -149,6 +145,9 @@ class FugwAlignment:
         target_features_normalized = target_features / np.linalg.norm(
             target_features, axis=1
         ).reshape(-1, 1)
+
+        if verbose:
+            print("Features computed")
 
         coarse_to_fine.fit(
             # Source and target's features and embeddings
