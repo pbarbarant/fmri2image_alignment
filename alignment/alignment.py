@@ -8,7 +8,8 @@ import nibabel as nib
 import numpy as np
 from joblib import Memory
 
-# Download MNI152 template
+
+# Load visual mask
 mni152_mask = nib.load(
     "/storage/store2/work/tbazeill/cneuromod_wm_5mm/gm_visual_mask.nii.gz"
 )
