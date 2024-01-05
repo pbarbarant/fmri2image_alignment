@@ -1,5 +1,6 @@
-import pandas as pd
 import shutil
+
+import pandas as pd
 
 
 def retrieve_metadata(source, target):
