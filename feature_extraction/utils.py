@@ -193,7 +193,6 @@ def compute_features(subjects, masker):
         features.append(source_features)
 
     features = np.concatenate(features, axis=0)
-    print(f"Features shape: {features.shape}")
     return features
 
 
