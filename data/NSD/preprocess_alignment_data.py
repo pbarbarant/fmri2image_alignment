@@ -1,10 +1,10 @@
 # %%
-from utils import load_metadata
-import pandas as pd
 from pathlib import Path
-import nibabel as nib
-from nilearn import image
 
+import nibabel as nib
+import pandas as pd
+from nilearn import image
+from utils import load_metadata
 
 metadata_path = Path(
     "/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
