@@ -163,6 +163,8 @@ cython_debug/
 data/NSD/stimuli/
 data/NSD/alignment_data/
 data/NSD/mappings/
+data/NSD/ica*
+data/NSD/pca*
 data/COCO/
 
 # Metadata
