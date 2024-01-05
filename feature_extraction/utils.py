@@ -1,10 +1,12 @@
-import numpy as np
-from nilearn import masking, maskers
-import nibabel as nib
-from sklearn.decomposition import PCA, FastICA
-from joblib import Memory
 from pathlib import Path
+
+import nibabel as nib
+import numpy as np
 from fugw.utils import load_mapping
+from joblib import Memory
+from nilearn import maskers, masking
+from sklearn.decomposition import PCA, FastICA
+from sklearn.preprocessing import StandardScaler
 
 
 def load_mapping_from_path(source, target, path):
@@ -45,51 +47,59 @@ def project_on_target(source_features, mapping):
     return predicted_target_features
 
 
-def compute_pca(features, n_components=1024):
-    """Compute PCA on features
-
-    Parameters
-    ----------
-    features : np.ndarray
-        Features to compute PCA on
-    n_components : int, optional
-        Number of components to keep, by default 1024
-
-    Returns
-    -------
-    PCA
-        PCA object
-    """
-    pca = PCA(n_components=n_components)
-    pca.fit(features)
-    return pca
-
-
-def compute_transformed_features_pca(features, pca):
+def compute_transformed_features_pca(features, n_components=1024):
     """Compute transformed features
 
     Parameters
     ----------
     features : np.ndarray
         Features to transform
-    pca : PCA
-        PCA object
+    n_components : int, optional
+        Number of components to keep, by default 1024
+
 
     Returns
     -------
     np.ndarray
         Transformed features
     """
-    return pca.transform(features)
+    # Standardize features
+    scaler = StandardScaler()
+    features = scaler.fit_transform(features)
+    # Compute PCA
+    pca = PCA(n_components=n_components)
+    return pca.fit_transform(features)
 
 
-def save_pca(pca, transformed_features, output_folder):
+def compute_transformed_features_ica(features, n_components=1024):
+    """Compute transformed features
+
+    Parameters
+    ----------
+    features : np.ndarray
+        Features to transform
+    n_components : int, optional
+        Number of components to keep, by default 1024
+
+
+    Returns
+    -------
+    np.ndarray
+        Transformed features
+    """
+    # Standardize features
+    scaler = StandardScaler()
+    features = scaler.fit_transform(features)
+    # Compute ICA
+    ica = FastICA(n_components=n_components)
+    return ica.fit_transform(features)
+
+
+def save_features(transformed_features, output_folder):
     """Save PCA components
 
     Parameters
     ----------
-    pca : PCA
-        PCA object
     transformed_features : np.ndarray
         Transformed features
     output_folder : str
@@ -97,76 +107,9 @@ def save_pca(pca, transformed_features, output_folder):
     """
     if not output_folder.exists():
         output_folder.mkdir(parents=True)
-    np.save(
-        output_folder / "pca_components.npy",
-        pca.components_,
-    )
     # Save transformed features
     np.save(
-        output_folder / "transformed_features.npy",
-        transformed_features,
-    )
-
-
-def compute_ica(features, n_components=1024):
-    """Compute ICA on features
-
-    Parameters
-    ----------
-    features : np.ndarray
-        Features to compute ICA on
-    n_components : int, optional
-        Number of components to keep, by default 1024
-
-    Returns
-    -------
-    ICA
-        FastICA object
-    """
-    ica = FastICA(n_components=n_components)
-    ica.fit(features)
-    return ica
-
-
-def compute_transformed_features_ica(features, ica):
-    """Compute transformed features
-
-    Parameters
-    ----------
-    features : np.ndarray
-        Features to transform
-    ica : ICA
-        FastICA object
-
-    Returns
-    -------
-    np.ndarray
-        Transformed features
-    """
-    return ica.transform(features)
-
-
-def save_ica(ica, transformed_features, output_folder):
-    """Save ICA components
-
-    Parameters
-    ----------
-    ica : ICA
-        FastICA object
-    transformed_features : np.ndarray
-        Transformed features
-    output_folder : str
-        Path to the output folder
-    """
-    if not output_folder.exists():
-        output_folder.mkdir(parents=True)
-    np.save(
-        output_folder / "ica_components.npy",
-        ica.components_,
-    )
-    # Save transformed features
-    np.save(
-        output_folder / "transformed_features.npy",
+        output_folder / "extracted_features.npy",
         transformed_features,
     )
 
