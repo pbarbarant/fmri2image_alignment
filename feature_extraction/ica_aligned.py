@@ -1,14 +1,9 @@
 # %%
-from nilearn import masking, maskers
 import numpy as np
-from sklearn.decomposition import FastICA
-import nibabel as nib
-from joblib import Memory
-from fugw.utils import load_mapping
 from pathlib import Path
 from utils import (
     compute_ica,
-    compute_transformed_features,
+    compute_transformed_features_ica,
     save_ica,
     load_mapping_from_path,
     project_on_target,
@@ -53,7 +48,7 @@ if __name__ == "__main__":
     ica = compute_ica(features)
 
     # Fit transformed features
-    transformed_features = compute_transformed_features(features, ica)
+    transformed_features = compute_transformed_features_ica(features, ica)
 
     # Save PCA components
     output_folder = Path(
