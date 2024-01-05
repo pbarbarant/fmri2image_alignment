@@ -166,7 +166,7 @@ data/NSD/masked_subjects/
 data/COCO/
 
 # Mappings
-alignments/mappings/
+alignment/mappings/
 
 # Features
 feature_extraction/features
