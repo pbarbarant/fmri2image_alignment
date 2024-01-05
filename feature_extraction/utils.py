@@ -171,31 +171,6 @@ def save_ica(ica, transformed_features, output_folder):
     )
 
 
-def compute_features(subjects, masker):
-    """Compute features from subjects
-
-    Parameters
-    ----------
-    subjects : list
-        List of subjects
-    masker : NiftiMasker
-
-    Returns
-    -------
-    np.ndarray
-        Features
-    """
-    features = []
-    for sub in subjects:
-        source_features = masker.transform(
-            f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{sub}_shared1000.nii.gz"
-        )
-        features.append(source_features)
-
-    features = np.concatenate(features, axis=0)
-    return features
-
-
 def load_visual_mask():
     """Load visual mask
 
