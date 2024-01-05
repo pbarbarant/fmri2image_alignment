@@ -48,9 +48,6 @@ if __name__ == "__main__":
 
     features = np.concatenate(features, axis=0)
     print(f"Features shape: {features.shape}")
-    labels = np.concatenate(
-        [np.ones((1000,)) * i for i in range(1, len(sources) + 1)]
-    )
 
     # Compute PCA
     ica = compute_ica(features)
@@ -62,4 +59,4 @@ if __name__ == "__main__":
     output_folder = Path(
         f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/ica_{target}"
     )
-    save_ica(ica, output_folder)
+    save_ica(ica, transformed_features, output_folder)
