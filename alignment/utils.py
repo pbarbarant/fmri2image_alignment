@@ -61,10 +61,10 @@ class FugwAlignment:
 
         Parameters
         ----------
-        X : NiftiImage
+        X : ndarray
             Source features
-        Y : NiftiImage
-            Target
+        Y : ndarray
+            Target features
         verbose : bool, optional, by default True
 
         Returns
@@ -105,83 +105,102 @@ class FugwAlignment:
         if verbose:
             print("Embeddings computed")
 
-        # Subsample vertices as uniformly as possible on the surface
-        source_sample = coarse_to_fine.sample_volume_uniformly(
-            segmentation,
-            embeddings=source_geometry_embeddings,
-            n_samples=self.n_samples,
+        source_features_normalized = X / np.linalg.norm(X, axis=1).reshape(
+            -1, 1
         )
-        target_sample = coarse_to_fine.sample_volume_uniformly(
-            segmentation,
-            embeddings=target_geometry_embeddings,
-            n_samples=self.n_samples,
+        target_features_normalized = Y / np.linalg.norm(Y, axis=1).reshape(
+            -1, 1
         )
-
-        if verbose:
-            print("Samples computed")
-
-        coarse_mapping = FUGW(
-            alpha=self.alpha_coarse,
-            rho=self.rho_coarse,
-            eps=self.eps_coarse,
-            reg_mode="independent",
-            divergence="kl",
-        )
-
-        fine_mapping = FUGWSparse(
-            alpha=self.alpha_fine,
-            rho=self.rho_fine,
-            eps=self.eps_fine,
-            reg_mode="independent",
-            divergence="kl",
-        )
-
-        source_features = self.masker.transform(X)
-        target_features = self.masker.transform(Y)
-
-        source_features_normalized = source_features / np.linalg.norm(
-            source_features, axis=1
-        ).reshape(-1, 1)
-        target_features_normalized = target_features / np.linalg.norm(
-            target_features, axis=1
-        ).reshape(-1, 1)
 
         if verbose:
             print("Features computed")
 
-        coarse_to_fine.fit(
-            # Source and target's features and embeddings
-            source_features=source_features_normalized,
-            target_features=target_features_normalized,
-            source_geometry_embeddings=source_embeddings_normalized,
-            target_geometry_embeddings=target_embeddings_normalized,
-            # Parametrize step 1 (coarse alignment between source and target)
-            source_sample=source_sample,
-            target_sample=target_sample,
-            coarse_mapping=coarse_mapping,
-            coarse_mapping_solver="mm",
-            coarse_mapping_solver_params={
-                "nits_bcd": 50,
-                "nits_uot": 100,
-            },
-            # Parametrize step 2 (selection of pairs of indices present in
-            # fine-grained's sparsity mask)
-            coarse_pairs_selection_method="topk",
-            source_selection_radius=(self.radius / source_distance_max),
-            target_selection_radius=(self.radius / target_distance_max),
-            # Parametrize step 3 (fine-grained alignment)
-            fine_mapping=fine_mapping,
-            fine_mapping_solver="mm",
-            fine_mapping_solver_params={
-                "nits_bcd": 5,
-                "nits_uot": 100,
-            },
-            # Misc
-            device=torch.device("cuda:0"),
-            verbose=verbose,
-        )
+        if self.method == "dense":
+            mapping = FUGW(
+                alpha=self.alpha_coarse,
+                rho=self.rho_coarse,
+                eps=self.eps_coarse,
+                reg_mode="independent",
+                divergence="kl",
+            )
 
-        self.mapping = fine_mapping
+            mapping.fit(
+                source_features=source_features_normalized,
+                target_features=target_features_normalized,
+                source_geometry=source_embeddings_normalized
+                @ source_embeddings_normalized.T,
+                target_geometry=target_embeddings_normalized
+                @ target_embeddings_normalized.T,
+                verbose=verbose,
+            )
+
+            self.mapping = mapping
+
+        elif self.method == "coarse_to_fine":
+            # Subsample vertices as uniformly as possible on the surface
+            source_sample = coarse_to_fine.sample_volume_uniformly(
+                segmentation,
+                embeddings=source_geometry_embeddings,
+                n_samples=self.n_samples,
+            )
+            target_sample = coarse_to_fine.sample_volume_uniformly(
+                segmentation,
+                embeddings=target_geometry_embeddings,
+                n_samples=self.n_samples,
+            )
+
+            if verbose:
+                print("Samples computed")
+
+            coarse_mapping = FUGW(
+                alpha=self.alpha_coarse,
+                rho=self.rho_coarse,
+                eps=self.eps_coarse,
+                reg_mode="independent",
+                divergence="kl",
+            )
+
+            fine_mapping = FUGWSparse(
+                alpha=self.alpha_fine,
+                rho=self.rho_fine,
+                eps=self.eps_fine,
+                reg_mode="independent",
+                divergence="kl",
+            )
+
+            coarse_to_fine.fit(
+                # Source and target's features and embeddings
+                source_features=source_features_normalized,
+                target_features=target_features_normalized,
+                source_geometry_embeddings=source_embeddings_normalized,
+                target_geometry_embeddings=target_embeddings_normalized,
+                # Parametrize step 1 (coarse alignment between source and target)
+                source_sample=source_sample,
+                target_sample=target_sample,
+                coarse_mapping=coarse_mapping,
+                coarse_mapping_solver="mm",
+                coarse_mapping_solver_params={
+                    "nits_bcd": 50,
+                    "nits_uot": 100,
+                },
+                # Parametrize step 2 (selection of pairs of indices present in
+                # fine-grained's sparsity mask)
+                coarse_pairs_selection_method="topk",
+                source_selection_radius=(self.radius / source_distance_max),
+                target_selection_radius=(self.radius / target_distance_max),
+                # Parametrize step 3 (fine-grained alignment)
+                fine_mapping=fine_mapping,
+                fine_mapping_solver="mm",
+                fine_mapping_solver_params={
+                    "nits_bcd": 20,
+                    "nits_uot": 100,
+                },
+                # Misc
+                device=torch.device("cuda:0"),
+                verbose=verbose,
+            )
+
+            self.mapping = fine_mapping
 
         return self
 
@@ -190,23 +209,19 @@ class FugwAlignment:
 
         Parameters
         ----------
-        X : NiftiImage
+        X : ndarray
             Source features
 
         Returns
         -------
-        NiftiImage
+        ndarray
             Projected features
         """
-
-        features = self.masker.transform(X)
 
         # If id_reg is True, interpolate the resulting
         # mapping with the identity matrix
         if self.id_reg is True:
-            transformed_features = (
-                self.mapping.transform(features) + features
-            ) / 2
+            transformed_features = (self.mapping.transform(X) + X) / 2
         else:
-            transformed_features = self.mapping.transform(features)
+            transformed_features = self.mapping.transform(X)
         return self.masker.inverse_transform(transformed_features)
