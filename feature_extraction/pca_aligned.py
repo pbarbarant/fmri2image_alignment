@@ -33,19 +33,14 @@ if __name__ == "__main__":
         mapping = load_mapping_from_path(
             source, target, path_to_mapping_folder
         )
-        print(f"Mapping shape: {mapping.pi.shape}")
         source_features = masker.transform(
             f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{source}_shared1000.nii.gz"
         )
-        print(f"Source features shape: {source_features.shape}")
         projected_source = project_on_target(source_features, mapping)
         features.append(projected_source)
 
     features = np.concatenate(features, axis=0)
     print(f"Features shape: {features.shape}")
-    labels = np.concatenate(
-        [np.ones((1000,)) * i for i in range(1, len(sources) + 1)]
-    )
 
     # Compute PCA
     pca = compute_pca(features)
