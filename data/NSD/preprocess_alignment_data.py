@@ -1,9 +1,8 @@
 # %%
 from pathlib import Path
 
-import nibabel as nib
+import numpy as np
 import pandas as pd
-from nilearn import image
 from utils import load_metadata
 
 metadata_path = Path(
@@ -26,23 +25,14 @@ img_ids_shared1000 = metadata["nsdId"].values.astype(int).tolist()
 
 def get_contrasts(sub, indices):
     path = Path(
-        f"/data/parietal/store3/data/natural_scenes/curated_3mm/{sub}.nii.gz"
+        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{sub}.npy"
     )
     assert path.exists(), f"Path {path} does not exist"
     # Open the large contrasts file
-    print(f"Loading {path}")
-    contrasts = nib.load(path)
-    print(f"Loading complete")
-    print(f"Shape: {contrasts.shape}")
+    contrasts = np.load(path)
     # Select the contrasts
-    print(f"Slicing...")
-    contrasts = image.index_img(
-        contrasts,
-        [i - 1 for i in indices],
-    )
-    print(f"Slicing complete")
-
-    return contrasts
+    offset = [i - 1 for i in indices]
+    return contrasts[offset, :]
 
 
 def subject_wrapper(sub, indices, image_ids):
@@ -55,7 +45,7 @@ def subject_wrapper(sub, indices, image_ids):
         outpath.mkdir(parents=True)
 
     # Save the concatenated image
-    contrasts.to_filename(outpath / f"{sub}_shared1000.nii.gz")
+    np.save(outpath / f"{sub}_shared1000.npy", contrasts)
     # Save the image ids
     pd.DataFrame(image_ids).to_csv(
         outpath / f"{sub}_shared1000.csv", index=False, header=False
