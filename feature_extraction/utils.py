@@ -1,10 +1,7 @@
 from pathlib import Path
 
-import nibabel as nib
 import numpy as np
 from fugw.utils import load_mapping
-from joblib import Memory
-from nilearn import maskers, masking
 from sklearn.decomposition import PCA, FastICA
 from sklearn.preprocessing import StandardScaler
 
@@ -112,20 +109,3 @@ def save_features(transformed_features, output_folder):
         output_folder / "extracted_features.npy",
         transformed_features,
     )
-
-
-def load_visual_mask():
-    """Load visual mask
-
-    Returns
-    -------
-    NiftiMasker
-    """
-    mni152_mask = nib.load(
-        "/storage/store2/work/tbazeill/cneuromod_wm_5mm/gm_visual_mask.nii.gz"
-    )
-    connected_mask = masking.compute_background_mask(
-        mni152_mask, connected=True
-    )
-    masker = maskers.NiftiMasker(connected_mask, memory=Memory()).fit()
-    return masker
