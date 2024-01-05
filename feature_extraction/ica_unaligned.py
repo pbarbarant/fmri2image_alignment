@@ -3,7 +3,7 @@ import numpy as np
 from pathlib import Path
 from utils import (
     compute_ica,
-    compute_transformed_features,
+    compute_transformed_features_ica,
     save_ica,
     load_visual_mask,
 )
@@ -29,7 +29,7 @@ if __name__ == "__main__":
     ica = compute_ica(features)
 
     # Fit transformed features
-    transformed_features = compute_transformed_features(features, ica)
+    transformed_features = compute_transformed_features_ica(features, ica)
 
     # Save ICA components
     output_folder = Path(
