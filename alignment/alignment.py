@@ -33,7 +33,16 @@ def compute_pairwise_mapping(source, target, masker, mapping_path):
         Aligned source image
     """
     # Initialize FUGW alignment
-    alignment = FugwAlignment(masker=masker)
+    alignment = FugwAlignment(
+        masker=masker,
+        alpha_coarse=0.2,
+        rho_coarse=1,
+        eps_coarse=1e-6,
+        alpha_fine=0.2,
+        rho_fine=1,
+        eps_fine=1e-6,
+        radius=10,
+    )
 
     # Fit alignment
     alignment.fit(source, target)
@@ -82,7 +91,7 @@ if __name__ == "__main__":
         target_img = load_subject_NSD(target)
 
         saving_dir = Path(
-            f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/mappings/"
+            f"/storage/store3/work/pbarbara/fmri2image_alignment/alignment/mappings/"
         )
         if not saving_dir.exists():
             os.makedirs(saving_dir)
