@@ -9,39 +9,32 @@ import numpy as np
 from joblib import Memory
 
 
-# Load visual mask
-mni152_mask = nib.load(
-    "/storage/store2/work/tbazeill/cneuromod_wm_5mm/gm_visual_mask.nii.gz"
-)
-connected_mask = masking.compute_background_mask(mni152_mask, connected=True)
-masker = maskers.NiftiMasker(connected_mask, memory=Memory()).fit()
-
-
 def compute_pairwise_mapping(source, target, masker, mapping_path):
     """Align two images using FUGW
 
     Parameters
     ----------
-    source : NiftiImage
+    source : ndarray
         Source image
-    target : NiftiImage
+    target : ndarray
         Target image
 
     Returns
     -------
-    NiftiImage
-        Aligned source image
+    None
     """
     # Initialize FUGW alignment
     alignment = FugwAlignment(
         masker=masker,
-        alpha_coarse=0.2,
+        method="coarse_to_fine",
+        n_samples=1000,
+        alpha_coarse=0.1,
         rho_coarse=1,
         eps_coarse=1e-6,
-        alpha_fine=0.2,
+        alpha_fine=0.1,
         rho_fine=1,
         eps_fine=1e-6,
-        radius=10,
+        radius=15,
     )
 
     # Fit alignment
@@ -63,32 +56,42 @@ def load_subject_NSD(subject, verbose=True):
 
     Returns
     -------
-    NiftiImage
+    ndarray
         Loaded image
     """
 
     sub_path = Path(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{subject}_shared1000.nii.gz"
+        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{subject}_shared1000.npy"
     )
 
     # Load volume
-    volume = nib.load(sub_path)
+    features = np.load(sub_path)
 
     if verbose:
         print(f"Successfully loaded {sub_path}")
 
-    return volume
+    return features
 
 
 if __name__ == "__main__":
+    # Define sources and target
     sources = [f"sub-{i:02d}" for i in range(2, 9)]
     target = "sub-01"
+    target_features = load_subject_NSD(target)
+
+    # Load visual mask
+    mni152_mask = nib.load(
+        "/storage/store2/work/tbazeill/cneuromod_wm_5mm/gm_visual_mask.nii.gz"
+    )
+    connected_mask = masking.compute_background_mask(
+        mni152_mask, connected=True
+    )
+    masker = maskers.NiftiMasker(connected_mask, memory=Memory()).fit()
 
     for source in sources:
         print(f"Aligning {source} on {target}")
 
-        source_img = load_subject_NSD(source)
-        target_img = load_subject_NSD(target)
+        source_features = load_subject_NSD(source)
 
         saving_dir = Path(
             f"/storage/store3/work/pbarbara/fmri2image_alignment/alignment/mappings/"
@@ -98,4 +101,6 @@ if __name__ == "__main__":
 
         mapping_path = saving_dir / f"{source}_{target}.pkl"
 
-        compute_pairwise_mapping(source_img, target_img, masker, mapping_path)
+        compute_pairwise_mapping(
+            source_features, target_features, masker, mapping_path
+        )
