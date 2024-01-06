@@ -4,6 +4,7 @@ import numpy as np
 from fugw.utils import load_mapping
 from sklearn.decomposition import PCA, FastICA
 from sklearn.preprocessing import StandardScaler
+from joblib import dump
 
 
 def load_mapping_from_path(source, target, path):
@@ -65,7 +66,7 @@ def compute_transformed_features_pca(features, n_components=1024):
     features = scaler.fit_transform(features)
     # Compute PCA
     pca = PCA(n_components=n_components)
-    return pca.fit_transform(features)
+    return pca.fit_transform(features), pca
 
 
 def compute_transformed_features_ica(features, n_components=1024):
@@ -89,10 +90,10 @@ def compute_transformed_features_ica(features, n_components=1024):
     features = scaler.fit_transform(features)
     # Compute ICA
     ica = FastICA(n_components=n_components)
-    return ica.fit_transform(features)
+    return ica.fit_transform(features), ica
 
 
-def save_features(transformed_features, output_folder):
+def save_features(transformed_features, model, output_folder):
     """Save PCA components
 
     Parameters
@@ -109,3 +110,5 @@ def save_features(transformed_features, output_folder):
         output_folder / "extracted_features.npy",
         transformed_features,
     )
+    # Save model
+    dump(model, output_folder / "model.joblib")
