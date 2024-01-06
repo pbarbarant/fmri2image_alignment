@@ -40,32 +40,48 @@ if __name__ == "__main__":
     stack_features_aligned = np.concatenate(features_unaligned, axis=0)
 
     # Fit transformed features
-    transformed_features_unaligned_pca = compute_transformed_features_pca(
-        stack_features_unaligned
-    )
-    transformed_features_aligned_pca = compute_transformed_features_pca(
-        stack_features_aligned
-    )
-    transformed_features_unaligned_ica = compute_transformed_features_ica(
-        stack_features_unaligned
-    )
-    transformed_features_aligned_ica = compute_transformed_features_ica(
-        stack_features_aligned
-    )
+    (
+        transformed_features_unaligned_pca,
+        pca_unaligned,
+    ) = compute_transformed_features_pca(stack_features_unaligned)
+    print("Unaligned PCA done")
+    (
+        transformed_features_aligned_pca,
+        pca_aligned,
+    ) = compute_transformed_features_pca(stack_features_aligned)
+    print("Aligned PCA done")
+    (
+        transformed_features_unaligned_ica,
+        ica_unaligned,
+    ) = compute_transformed_features_ica(stack_features_unaligned)
+    print("Unaligned ICA done")
+    (
+        transformed_features_aligned_ica,
+        ica_aligned,
+    ) = compute_transformed_features_ica(stack_features_aligned)
+    print("Aligned ICA done")
 
     # Save PCA components
     output_folder = Path(
         f"/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/"
     )
     save_features(
-        transformed_features_unaligned_pca, output_folder / "pca_unaligned"
+        transformed_features_unaligned_pca,
+        pca_unaligned,
+        output_folder / "pca_unaligned",
     )
     save_features(
-        transformed_features_aligned_pca, output_folder / "pca_aligned"
+        transformed_features_aligned_pca,
+        pca_aligned,
+        output_folder / "pca_aligned",
     )
     save_features(
-        transformed_features_unaligned_ica, output_folder / "ica_unaligned"
+        transformed_features_unaligned_ica,
+        ica_unaligned,
+        output_folder / "ica_unaligned",
     )
     save_features(
-        transformed_features_aligned_ica, output_folder / "ica_aligned"
+        transformed_features_aligned_ica,
+        ica_aligned,
+        output_folder / "ica_aligned",
     )
