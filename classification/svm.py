@@ -56,9 +56,6 @@ def evaluate_model(model, verbose=True):
         cmap="Blues",
         xticks_rotation="vertical",
     )
-    plt.tight_layout(
-        pad=0.5,
-    )
     plt.title(f"Confusion matrix for {model}")
 
     # Save plot
