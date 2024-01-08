@@ -13,7 +13,7 @@ N_images = len(metadata)
 
 
 # Select images where shared1000 is True
-metadata = metadata[metadata["shared1000"] == True]
+metadata = metadata[metadata["shared1000"] is True]
 
 # Filter out images where subject1_rep0 is greater than 30*750
 metadata = metadata[metadata["subject1_rep0"] <= 22274]
@@ -39,7 +39,7 @@ def subject_wrapper(sub, indices, image_ids):
     contrasts = get_contrasts(sub, indices)
 
     outpath = Path(
-        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data"
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data"
     )
     if not outpath.exists():
         outpath.mkdir(parents=True)
