@@ -13,7 +13,7 @@ N_images = len(metadata)
 
 
 # Select images where shared1000 is True
-metadata = metadata[metadata["shared1000"] is True]
+metadata = metadata[metadata["shared1000"] == True]
 
 # Filter out images where subject1_rep0 is greater than 30*750
 metadata = metadata[metadata["subject1_rep0"] <= 22274]
