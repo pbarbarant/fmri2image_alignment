@@ -63,7 +63,7 @@ if __name__ == "__main__":
 
     # Save PCA components
     output_folder = Path(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/"
+        "/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/"
     )
     save_features(
         transformed_features_unaligned_pca,
