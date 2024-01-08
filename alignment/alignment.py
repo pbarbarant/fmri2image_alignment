@@ -30,10 +30,10 @@ def compute_pairwise_mapping(source, target, masker, mapping_path):
         n_samples=1000,
         alpha_coarse=0.1,
         rho_coarse=1,
-        eps_coarse=1e-6,
+        eps_coarse=1e-4,
         alpha_fine=0.1,
         rho_fine=1,
-        eps_fine=1e-6,
+        eps_fine=1e-4,
         radius=15,
     )
 
