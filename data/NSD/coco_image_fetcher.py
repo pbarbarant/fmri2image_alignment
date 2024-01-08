@@ -1,9 +1,7 @@
 # %%
 import os
-import shutil
 from pathlib import Path
 
-import pandas as pd
 from PIL import Image
 from tqdm import tqdm
 from utils import retrieve_metadata
