@@ -1,6 +1,6 @@
 import numpy as np
 import nibabel as nib
-from nilearn import image, maskers, masking
+from nilearn import maskers, masking
 from pathlib import Path
 from joblib import Memory
 
@@ -26,7 +26,7 @@ def load_subject_NSD(subject_name, verbose=True):
         print(f"Loading {subject_path}")
     subject_img = nib.load(subject_path)
     if verbose:
-        print(f"Loading complete")
+        print("Loading complete")
 
     return subject_img
 
@@ -92,7 +92,7 @@ def save_masked_subject(subject_name, masked_subject, verbose=True):
         print(f"Saving {masked_subject_path}")
     np.save(masked_subject_path, masked_subject)
     if verbose:
-        print(f"Saving complete")
+        print("Saving complete")
 
 
 if __name__ == "__main__":
