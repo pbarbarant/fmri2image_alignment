@@ -32,28 +32,48 @@ subjects = np.concatenate([np.ones(902) * i for i in range(2, 9)])
 
 
 fig, axes = plt.subplots(1, 4, figsize=(12, 4))
+fig.suptitle("Components of PCA and ICA features")
 axes[0].scatter(
     ica_aligned[:, 0],
     ica_aligned[:, 1],
     c=subjects,
     cmap="tab10",
+    s=3,
+    alpha=0.5,
     label="subject",
 )
 axes[0].set_xlim(-20, 20)
 axes[0].set_ylim(-20, 20)
 axes[0].set_title("ICA aligned")
 axes[1].scatter(
-    ica_unaligned[:, 0], ica_unaligned[:, 1], c=subjects, cmap="tab10"
+    ica_unaligned[:, 0],
+    ica_unaligned[:, 1],
+    c=subjects,
+    cmap="tab10",
+    s=3,
+    alpha=0.5,
 )
 axes[1].set_title("ICA unaligned")
 axes[1].set_xlim(-20, 20)
 axes[1].set_ylim(-20, 20)
-axes[2].scatter(pca_aligned[:, 0], pca_aligned[:, 1], c=subjects, cmap="tab10")
+axes[2].scatter(
+    pca_aligned[:, 0],
+    pca_aligned[:, 1],
+    c=subjects,
+    cmap="tab10",
+    s=3,
+    alpha=0.5,
+)
 axes[2].set_title("PCA aligned")
 axes[2].set_xlim(-1000, 1000)
 axes[2].set_ylim(-1000, 1000)
 axes[3].scatter(
-    pca_unaligned[:, 0], pca_unaligned[:, 1], c=subjects, cmap="tab10"
+    pca_unaligned[:, 0],
+    pca_unaligned[:, 1],
+    c=subjects,
+    cmap="tab10",
+    s=3,
+    alpha=0.5,
 )
 axes[3].set_title("PCA unaligned")
 axes[3].set_xlim(-1000, 1000)
@@ -88,7 +108,7 @@ metadata = pd.read_csv(metadata_path)
 # Merge annotations and metadata on nsdId
 metadata = metadata.merge(annotations, left_on="nsdId", right_on="id")
 metadata = metadata[
-    (metadata["shared1000"] == True) & (metadata["subject1_rep0"] <= 22274)
+    (metadata["shared1000"] is True) & (metadata["subject1_rep0"] <= 22274)
 ]
 
 metadata = metadata[["nsdId", "supercat"]]
@@ -97,27 +117,47 @@ labels = np.concatenate([np.array(metadata["supercat"])] * 7).flatten()
 labels = LabelEncoder().fit_transform(labels)
 
 fig, axes = plt.subplots(1, 4, figsize=(12, 4))
+fig.suptitle("Components of PCA and ICA features")
 axes[0].scatter(
     ica_aligned[:, 0],
     ica_aligned[:, 1],
     c=labels,
     cmap="tab10",
+    s=3,
+    alpha=0.5,
 )
 axes[0].set_xlim(-20, 20)
 axes[0].set_ylim(-20, 20)
 axes[0].set_title("ICA aligned")
 axes[1].scatter(
-    ica_unaligned[:, 0], ica_unaligned[:, 1], c=labels, cmap="tab10"
+    ica_unaligned[:, 0],
+    ica_unaligned[:, 1],
+    c=labels,
+    cmap="tab10",
+    s=3,
+    alpha=0.5,
 )
 axes[1].set_title("ICA unaligned")
 axes[1].set_xlim(-20, 20)
 axes[1].set_ylim(-20, 20)
-axes[2].scatter(pca_aligned[:, 0], pca_aligned[:, 1], c=labels, cmap="tab10")
+axes[2].scatter(
+    pca_aligned[:, 0],
+    pca_aligned[:, 1],
+    c=labels,
+    cmap="tab10",
+    s=3,
+    alpha=0.5,
+)
 axes[2].set_title("PCA aligned")
 axes[2].set_xlim(-1000, 1000)
 axes[2].set_ylim(-1000, 1000)
 axes[3].scatter(
-    pca_unaligned[:, 0], pca_unaligned[:, 1], c=labels, cmap="tab10"
+    pca_unaligned[:, 0],
+    pca_unaligned[:, 1],
+    c=labels,
+    cmap="tab10",
+    s=3,
+    alpha=0.5,
 )
 axes[3].set_title("PCA unaligned")
 axes[3].set_xlim(-1000, 1000)
