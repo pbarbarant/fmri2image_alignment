@@ -2,8 +2,8 @@
 import os
 from pathlib import Path
 from utils import FugwAlignment
-from nilearn import maskers, masking, datasets, image
-from fugw.utils import load_mapping, save_mapping
+from nilearn import maskers, masking
+from fugw.utils import save_mapping
 import nibabel as nib
 import numpy as np
 from joblib import Memory
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         source_features = load_subject_NSD(source)
 
         saving_dir = Path(
-            f"/storage/store3/work/pbarbara/fmri2image_alignment/alignment/mappings/"
+            "/storage/store3/work/pbarbara/fmri2image_alignment/alignment/mappings/"
         )
         if not saving_dir.exists():
             os.makedirs(saving_dir)
