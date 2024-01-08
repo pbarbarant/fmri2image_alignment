@@ -54,7 +54,7 @@ def load_labels_share1000():
     # Merge annotations and metadata on nsdId
     metadata = metadata.merge(annotations, left_on="nsdId", right_on="id")
     metadata = metadata[
-        (metadata["shared1000"] == True) & (metadata["subject1_rep0"] <= 22274)
+        (metadata["shared1000"] is True) & (metadata["subject1_rep0"] <= 22274)
     ]
 
     metadata = metadata[["nsdId", "supercat"]]
