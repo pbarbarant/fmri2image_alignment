@@ -8,9 +8,10 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from utils import load_features_from_model, load_labels_share1000
 from pathlib import Path
+import numpy as np
 
 
-def evaluate_model(model, n_components=-1, verbose=True):
+def evaluate_model(model, n_components=1024, verbose=True):
     """Evaluate the given model using a linear SVM classifier.
 
     Parameters
@@ -19,11 +20,11 @@ def evaluate_model(model, n_components=-1, verbose=True):
         Model to evaluate. Must be one of "pca_unaligned", "pca_aligned",
         "ica_unaligned", "ica_aligned".
     n_components : int, optional
-        Number of components to use. If -1, use all components, by default -1
+        Number of components to use. Defaults to 1024.
     verbose : bool, optional
         Whether to print progress information, by default True
     """
-    X = load_features_from_model(model=model)[:, :n_components]
+    X = load_features_from_model(model=model)[:, 0:n_components]
     y = load_labels_share1000()
 
     # Split data
