@@ -58,7 +58,7 @@ for sub in subjects:
                 "subject": sub,
                 "image_path": image_path,
                 "fmri_path": fmri_path,
-                "split": "train",
+                "split": "train" if sub >= 2 else "test",
             },
             index=[0],
         )
@@ -128,7 +128,7 @@ for sub in subjects:
                 "subject": sub,
                 "image_path": image_path,
                 "fmri_path": fmri_path,
-                "split": "train",
+                "split": "train" if sub >= 2 else "test",
             },
             index=[0],
         )
