@@ -1,9 +1,64 @@
+# %%
 import os
 import torch
 import torchvision
 from PIL import Image
 from matplotlib import pyplot as plt
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
+import pandas as pd
+import numpy as np
+
+
+class FmriDataset(Dataset):
+    def __init__(self, csv_file, split="train", transform=None):
+        self.df = pd.read_csv(csv_file)
+        self.transform = transform
+        self.filtered_data = self.df[self.df["split"] == split]
+
+    def __len__(self):
+        return len(self.filtered_data)
+
+    def __getitem__(self, index):
+        # Load paths and labels from the filtered dataframe
+        image_path = self.filtered_data.iloc[index]["image_path"]
+        fmri_path = self.filtered_data.iloc[index]["fmri_path"]
+
+        image = Image.open(image_path).convert("RGB")
+        fmri_data = torch.from_numpy(np.load(fmri_path))
+
+        # Apply transformations if provided
+        if self.transform:
+            image = self.transform(image)
+
+        # Return a dictionary containing the samples and labels
+        return {"image": image, "fmri": fmri_data}
+
+
+def get_data(args):
+    transforms = torchvision.transforms.Compose(
+        [
+            torchvision.transforms.Resize((64, 64)),
+            torchvision.transforms.ToTensor(),
+            torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
+        ]
+    )
+
+    train_dataset = FmriDataset(
+        args.dataset_path, split="train", transform=transforms
+    )
+    test_dataset = FmriDataset(
+        args.dataset_path, split="test", transform=transforms
+    )
+
+    batch_size = args.batch_size
+    train_dataloader = DataLoader(
+        train_dataset, batch_size=batch_size, shuffle=True
+    )
+    test_dataloader = DataLoader(
+        test_dataset, batch_size=batch_size, shuffle=False
+    )
+
+    return train_dataloader, test_dataloader
 
 
 def plot_images(images):
@@ -26,26 +81,6 @@ def save_images(images, path, **kwargs):
     ndarr = grid.permute(1, 2, 0).to("cpu").numpy()
     im = Image.fromarray(ndarr)
     im.save(path)
-
-
-def get_data(args):
-    transforms = torchvision.transforms.Compose(
-        [
-            torchvision.transforms.Resize(
-                80
-            ),  # args.image_size + 1/4 *args.image_size
-            torchvision.transforms.RandomResizedCrop(
-                args.image_size, scale=(0.8, 1.0)
-            ),
-            torchvision.transforms.ToTensor(),
-            torchvision.transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-        ]
-    )
-    dataset = torchvision.datasets.ImageFolder(
-        args.data_path, transform=transforms
-    )
-    dataloader = DataLoader(dataset, batch_size=args.batch_size, shuffle=True)
-    return dataloader
 
 
 def setup_logging(run_name):
