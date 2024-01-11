@@ -45,13 +45,17 @@ def project_on_target(source_features, mapping):
     return predicted_target_features
 
 
-def compute_transformed_features_pca(features, n_components=1024):
+def compute_transformed_features_pca(
+    train_features, test_features, n_components=1024
+):
     """Compute transformed features
 
     Parameters
     ----------
-    features : np.ndarray
-        Features to transform
+    train_features : np.ndarray
+        Features to fit the ica
+    test_features : np.ndarray
+        Target features to transform
     n_components : int, optional
         Number of components to keep, by default 1024
 
@@ -63,19 +67,33 @@ def compute_transformed_features_pca(features, n_components=1024):
     """
     # Standardize features
     scaler = StandardScaler()
-    features = scaler.fit_transform(features)
+    train_features = scaler.fit_transform(train_features)
     # Compute PCA
     pca = PCA(n_components=n_components)
-    return pca.fit_transform(features), pca
+    # Scale target features
+    test_features = scaler.transform(test_features)
+
+    transformed_features_train = pca.fit_transform(train_features)
+    transformed_features_test = pca.transform(test_features)
+
+    return (
+        transformed_features_train,
+        transformed_features_test,
+        pca,
+    )
 
 
-def compute_transformed_features_ica(features, n_components=1024):
+def compute_transformed_features_ica(
+    train_features, test_features, n_components=1024
+):
     """Compute transformed features
 
     Parameters
     ----------
-    features : np.ndarray
-        Features to transform
+    train_features : np.ndarray
+        Features to fit the ica
+    test_features : np.ndarray
+        Target features to transform
     n_components : int, optional
         Number of components to keep, by default 1024
 
@@ -87,13 +105,25 @@ def compute_transformed_features_ica(features, n_components=1024):
     """
     # Standardize features
     scaler = StandardScaler()
-    features = scaler.fit_transform(features)
+    train_features = scaler.fit_transform(train_features)
     # Compute ICA
     ica = FastICA(n_components=n_components)
-    return ica.fit_transform(features), ica
+    # Scale target features
+    test_features = scaler.transform(test_features)
+
+    transformed_features_train = ica.fit_transform(train_features)
+    transformed_features_test = ica.transform(test_features)
+
+    return (
+        transformed_features_train,
+        transformed_features_test,
+        ica,
+    )
 
 
-def save_features(transformed_features, model, output_folder):
+def save_features(
+    transformed_features_train, transformed_features_test, model, output_folder
+):
     """Save PCA components
 
     Parameters
@@ -107,8 +137,12 @@ def save_features(transformed_features, model, output_folder):
         output_folder.mkdir(parents=True)
     # Save transformed features
     np.save(
-        output_folder / "extracted_features.npy",
-        transformed_features,
+        output_folder / "extracted_features_train.npy",
+        transformed_features_train,
+    )
+    np.save(
+        output_folder / "extracted_features_test.npy",
+        transformed_features_test,
     )
     # Save model
     dump(model, output_folder / "model.joblib")
