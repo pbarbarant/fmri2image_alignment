@@ -13,7 +13,9 @@ class FmriDataset(Dataset):
     def __init__(self, csv_file, split="train", transform=None):
         self.df = pd.read_csv(csv_file)
         self.transform = transform
-        self.filtered_data = self.df[self.df["split"] == split]
+        self.filtered_data = self.df[
+            (self.df["split"] == split) & (self.df["shared1000"] == True)
+        ]
 
     def __len__(self):
         return len(self.filtered_data)
@@ -21,7 +23,11 @@ class FmriDataset(Dataset):
     def __getitem__(self, index):
         # Load paths and labels from the filtered dataframe
         image_path = self.filtered_data.iloc[index]["image_path"]
+        if image_path.startswith("/storage"):
+            image_path = image_path.replace("/storage", "/data/parietal")
         fmri_path = self.filtered_data.iloc[index]["fmri_path"]
+        if fmri_path.startswith("/storage"):
+            fmri_path = fmri_path.replace("/storage", "/data/parietal")
 
         image = Image.open(image_path).convert("RGB")
         fmri_data = torch.from_numpy(np.load(fmri_path))
