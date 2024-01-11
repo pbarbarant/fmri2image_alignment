@@ -61,7 +61,7 @@ def load_subject_NSD(subject, verbose=True):
     """
 
     sub_path = Path(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{subject}_shared1000.npy"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{subject}_shared1000.npy"
     )
 
     # Load volume
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         source_features = load_subject_NSD(source)
 
         saving_dir = Path(
-            "/storage/store3/work/pbarbara/fmri2image_alignment/alignment/mappings/"
+            "/data/parietal/store3/work/pbarbara/fmri2image_alignment/alignment/mappings/"
         )
         if not saving_dir.exists():
             os.makedirs(saving_dir)
