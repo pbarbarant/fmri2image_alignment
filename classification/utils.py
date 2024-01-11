@@ -17,10 +17,13 @@ def load_features_from_model(model="pca_unaligned"):
     ndarray
         Features
     """
-    X = np.load(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/{model}/extracted_features.npy"
+    X_train = np.load(
+        f"/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/{model}/extracted_features_train.npy"
     )
-    return X
+    X_test = np.load(
+        f"/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/{model}/extracted_features_test.npy"
+    )
+    return X_train, X_test
 
 
 def load_labels_share1000():
@@ -59,5 +62,6 @@ def load_labels_share1000():
 
     metadata = metadata[["nsdId", "supercat"]]
 
-    labels = np.concatenate([np.array(metadata["supercat"])] * 7).flatten()
+    # labels = np.concatenate([np.array(metadata["supercat"])] * 7).flatten()
+    labels = np.array(metadata["supercat"])
     return labels
