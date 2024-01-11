@@ -60,14 +60,14 @@ def evaluate_model(model, n_components=1024, verbose=True):
 
     # Save plot
     plt.savefig(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/figures/{model}.png"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/{model}.png"
     )
 
     # Save report to csv
     report = classification_report(y_test, y_pred, output_dict=True)
     report_df = pd.DataFrame(report).transpose()
     report_dir = Path(
-        "/storage/store3/work/pbarbara/fmri2image_alignment/classification/reports"
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/classification/reports"
     )
     report_dir.mkdir(exist_ok=True)
     report_df.to_csv(report_dir / f"{model}.csv")
