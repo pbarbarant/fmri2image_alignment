@@ -4,38 +4,12 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 
-class EMA:
-    def __init__(self, beta):
-        super().__init__()
-        self.beta = beta
-        self.step = 0
-
-    def update_model_average(self, ma_model, current_model):
-        for current_params, ma_params in zip(
-            current_model.parameters(), ma_model.parameters()
-        ):
-            old_weight, up_weight = ma_params.data, current_params.data
-            ma_params.data = self.update_average(old_weight, up_weight)
-
-    def update_average(self, old, new):
-        if old is None:
-            return new
-        return old * self.beta + (1 - self.beta) * new
-
-    def step_ema(self, ema_model, model, step_start_ema=2000):
-        if self.step < step_start_ema:
-            self.reset_parameters(ema_model, model)
-            self.step += 1
-            return
-        self.update_model_average(ema_model, model)
-        self.step += 1
-
-    def reset_parameters(self, ema_model, model):
-        ema_model.load_state_dict(model.state_dict())
-
-
 class SelfAttention(nn.Module):
-    def __init__(self, channels, size):
+    def __init__(
+        self,
+        channels,
+        size,
+    ):
         super(SelfAttention, self).__init__()
         self.channels = channels
         self.size = size
@@ -61,7 +35,11 @@ class SelfAttention(nn.Module):
 
 class DoubleConv(nn.Module):
     def __init__(
-        self, in_channels, out_channels, mid_channels=None, residual=False
+        self,
+        in_channels,
+        out_channels,
+        mid_channels=None,
+        residual=False,
     ):
         super().__init__()
         self.residual = residual
@@ -113,7 +91,12 @@ class Down(nn.Module):
 
 
 class Up(nn.Module):
-    def __init__(self, in_channels, out_channels, emb_dim=256):
+    def __init__(
+        self,
+        in_channels,
+        out_channels,
+        emb_dim=256,
+    ):
         super().__init__()
 
         self.up = nn.Upsample(
@@ -139,9 +122,90 @@ class Up(nn.Module):
         return x + emb
 
 
+class FmriEncoder(nn.Module):
+    def __init__(
+        self,
+        input_dim=1024,
+        time_dim=256,
+    ):
+        super().__init__()
+        self.input_dim = input_dim
+        self.time_dim = time_dim
+        self.fc1 = nn.Linear(input_dim, time_dim)
+        self.bn1 = nn.BatchNorm1d(time_dim)
+        self.fc2 = nn.Linear(time_dim, time_dim)
+        self.bn2 = nn.BatchNorm1d(time_dim)
+        self.fc3 = nn.Linear(time_dim, time_dim)
+        self.bn3 = nn.BatchNorm1d(time_dim)
+
+    def forward(self, x):
+        x = F.gelu(self.bn1(self.fc1(x)))
+        x = F.gelu(self.bn2(self.fc2(x)))
+        x = self.bn3(self.fc3(x))
+        return x
+
+
+class FmriEncoderWithMultiheadAttention(nn.Module):
+    def __init__(
+        self,
+        input_dim=1024,  # Assuming input_dim is the number of voxels
+        time_dim=256,
+        num_heads=8,
+    ):
+        super().__init__()
+        self.input_dim = input_dim
+        self.time_dim = time_dim
+        self.num_heads = num_heads
+
+        # Linear projections for query, key, and value
+        self.query_linear = nn.Linear(input_dim, input_dim * num_heads)
+        self.key_linear = nn.Linear(input_dim, input_dim * num_heads)
+        self.value_linear = nn.Linear(input_dim, input_dim * num_heads)
+
+        # MultiheadAttention layer
+        self.multihead_attention = nn.MultiheadAttention(
+            embed_dim=input_dim * num_heads, num_heads=num_heads
+        )
+
+        # Linear layer after multihead attention
+        self.out_linear = nn.Linear(input_dim * num_heads, time_dim)
+
+        # Batch Normalization layer
+        self.bn = nn.BatchNorm1d(time_dim)
+
+    def forward(self, x):
+        # Linear projections
+        query = self.query_linear(x)
+        key = self.key_linear(x)
+        value = self.value_linear(x)
+
+        # Reshape projections for multi-head attention
+        query = query.view(-1, self.num_heads, self.input_dim)
+        key = key.view(-1, self.num_heads, self.input_dim)
+        value = value.view(-1, self.num_heads, self.input_dim)
+
+        # Multihead Attention
+        attention_output, _ = self.multihead_attention(query, key, value)
+
+        # Reshape back to (n_samples, input_dim * num_heads)
+        attention_output = attention_output.view(
+            -1, self.num_heads * self.input_dim
+        )
+
+        # Linear transformation and Batch Normalization
+        output = self.bn(self.out_linear(attention_output))
+
+        return output
+
+
 class UNet_conditional(nn.Module):
     def __init__(
-        self, c_in=3, c_out=3, time_dim=256, num_classes=None, device="cuda"
+        self,
+        c_in=3,
+        c_out=3,
+        time_dim=256,
+        mri_dim=1024,
+        device="cuda",
     ):
         super().__init__()
         self.device = device
@@ -166,8 +230,7 @@ class UNet_conditional(nn.Module):
         self.sa6 = SelfAttention(64, 64)
         self.outc = nn.Conv2d(64, c_out, kernel_size=1)
 
-        if num_classes is not None:
-            self.label_emb = nn.Embedding(num_classes, time_dim)
+        self.fmri_emb = FmriEncoder(mri_dim, time_dim)
 
     def pos_encoding(self, t, channels):
         inv_freq = 1.0 / (
@@ -185,9 +248,7 @@ class UNet_conditional(nn.Module):
     def forward(self, x, t, y):
         t = t.unsqueeze(-1).type(torch.float)
         t = self.pos_encoding(t, self.time_dim)
-
-        if y is not None:
-            t += self.label_emb(y)
+        t += self.fmri_emb(y)
 
         x1 = self.inc(x)
         x2 = self.down1(x1, t)
@@ -212,10 +273,9 @@ class UNet_conditional(nn.Module):
 
 
 if __name__ == "__main__":
-    # net = UNet(device="cpu")
-    net = UNet_conditional(num_classes=1024, device="cpu")
+    net = UNet_conditional(mri_dim=1024, device="cpu")
     print(sum([p.numel() for p in net.parameters()]))
-    x = torch.randn(3, 3, 64, 64)
+    x = torch.randn(30, 3, 64, 64, dtype=torch.float32)
     t = x.new_tensor([500] * x.shape[0]).long()
-    y = x.new_tensor([1] * x.shape[0]).long()
+    y = x.new_tensor(torch.randn(x.shape[0], 1024))
     print(net(x, t, y).shape)
