@@ -39,26 +39,47 @@ if __name__ == "__main__":
     stack_features_unaligned = np.concatenate(features_aligned, axis=0)
     stack_features_aligned = np.concatenate(features_unaligned, axis=0)
 
+    # Load target features
+    target_features = np.load(
+        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{target}_shared1000.npy"
+    )
+
     # Fit transformed features
     (
-        transformed_features_unaligned_pca,
+        transformed_features_unaligned_pca_train,
+        transformed_features_unaligned_pca_test,
         pca_unaligned,
-    ) = compute_transformed_features_pca(stack_features_unaligned)
+    ) = compute_transformed_features_pca(
+        stack_features_unaligned,
+        target_features,
+    )
     print("Unaligned PCA done")
     (
-        transformed_features_aligned_pca,
+        transformed_features_aligned_pca_train,
+        transformed_features_aligned_pca_test,
         pca_aligned,
-    ) = compute_transformed_features_pca(stack_features_aligned)
+    ) = compute_transformed_features_pca(
+        stack_features_aligned,
+        target_features,
+    )
     print("Aligned PCA done")
     (
-        transformed_features_unaligned_ica,
+        transformed_features_unaligned_ica_train,
+        transformed_features_unaligned_ica_test,
         ica_unaligned,
-    ) = compute_transformed_features_ica(stack_features_unaligned)
+    ) = compute_transformed_features_ica(
+        stack_features_unaligned,
+        target_features,
+    )
     print("Unaligned ICA done")
     (
-        transformed_features_aligned_ica,
+        transformed_features_aligned_ica_train,
+        transformed_features_aligned_ica_test,
         ica_aligned,
-    ) = compute_transformed_features_ica(stack_features_aligned)
+    ) = compute_transformed_features_ica(
+        stack_features_aligned,
+        target_features,
+    )
     print("Aligned ICA done")
 
     # Save PCA components
@@ -66,22 +87,26 @@ if __name__ == "__main__":
         "/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/"
     )
     save_features(
-        transformed_features_unaligned_pca,
+        transformed_features_unaligned_pca_train,
+        transformed_features_unaligned_pca_test,
         pca_unaligned,
         output_folder / "pca_unaligned",
     )
     save_features(
-        transformed_features_aligned_pca,
+        transformed_features_aligned_pca_train,
+        transformed_features_aligned_pca_test,
         pca_aligned,
         output_folder / "pca_aligned",
     )
     save_features(
-        transformed_features_unaligned_ica,
+        transformed_features_unaligned_ica_train,
+        transformed_features_unaligned_ica_test,
         ica_unaligned,
         output_folder / "ica_unaligned",
     )
     save_features(
-        transformed_features_aligned_ica,
+        transformed_features_aligned_ica_train,
+        transformed_features_aligned_ica_test,
         ica_aligned,
         output_folder / "ica_aligned",
     )
