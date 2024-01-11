@@ -24,11 +24,10 @@ def evaluate_model(model, n_components=1024, verbose=True):
     verbose : bool, optional
         Whether to print progress information, by default True
     """
-    X = load_features_from_model(model=model)[:, 0:n_components]
-    y = load_labels_share1000()
-
-    # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+    X_train, X_test = load_features_from_model(model=model)
+    labels = load_labels_share1000()
+    y_train = np.concatenate([labels] * 7).flatten()
+    y_test = labels.flatten()
 
     # Scale data
     scaler = StandardScaler()
