@@ -6,7 +6,7 @@ import pandas as pd
 from utils import load_metadata
 
 metadata_path = Path(
-    "/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
+    "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
 )
 metadata = load_metadata(metadata_path)
 N_images = len(metadata)
@@ -25,7 +25,7 @@ img_ids_shared1000 = metadata["nsdId"].values.astype(int).tolist()
 
 def get_contrasts(sub, indices):
     path = Path(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{sub}.npy"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{sub}.npy"
     )
     assert path.exists(), f"Path {path} does not exist"
     # Open the large contrasts file
