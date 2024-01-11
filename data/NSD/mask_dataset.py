@@ -20,7 +20,7 @@ def load_subject_NSD(subject_name, verbose=True):
     """
     # Load subject image
     subject_path = Path(
-        f"/storage/store3/data/natural_scenes/curated_3mm/{subject_name}.nii.gz"
+        f"/data/parietal/store3/data/natural_scenes/curated_3mm/{subject_name}.nii.gz"
     )
     if verbose:
         print(f"Loading {subject_path}")
@@ -46,7 +46,7 @@ def load_and_save_visual_mask():
     )
     # Save mask
     mask_path = Path(
-        "/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/visual_mask.nii.gz"
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/visual_mask.nii.gz"
     )
     nib.save(connected_mask, mask_path)
 
@@ -85,7 +85,7 @@ def save_masked_subject(subject_name, masked_subject, verbose=True):
     """
     # Save masked subject
     masked_subject_path = Path(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{subject_name}.npy"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{subject_name}.npy"
     )
 
     if verbose:
