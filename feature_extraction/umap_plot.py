@@ -1,6 +1,5 @@
 # %%
 import numpy as np
-from pathlib import Path
 import umap
 import matplotlib.pyplot as plt
 
@@ -9,10 +8,6 @@ if __name__ == "__main__":
     # Load features
     target = "sub-01"
     sources = [f"sub-0{i}" for i in range(2, 9)]
-    path_to_mapping_folder = Path(
-        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/alignment/mappings"
-    )
-    assert path_to_mapping_folder.exists(), "Mappings folder does not exist"
 
     features_aligned = []
     features_unaligned = []
@@ -30,16 +25,24 @@ if __name__ == "__main__":
         features_unaligned.append(source_features)
         features_aligned.append(projected_source)
 
-    stack_features_unaligned = np.concatenate(features_aligned, axis=0)
-    stack_features_aligned = np.concatenate(features_unaligned, axis=0)
+    stack_features_unaligned = np.concatenate(features_unaligned, axis=0)
+    stack_features_aligned = np.concatenate(features_aligned, axis=0)
 
     # Load target features
     target_features = np.load(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{target}_shared1000.npy"
+        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{target}.npy"
+    )
+
+    # Append target features
+    stack_features_unaligned = np.concatenate(
+        [target_features, stack_features_unaligned], axis=0
+    )
+    stack_features_aligned = np.concatenate(
+        [target_features, stack_features_aligned], axis=0
     )
 
     labels = np.concatenate(
-        [i * np.ones(len(source_features)) for i in range(2, 9)]
+        [i * np.ones(len(source_features)) for i in range(1, 9)]
     )
     print(labels.shape)
 
@@ -87,7 +90,7 @@ if __name__ == "__main__":
     ]
     ax[1].legend(
         handles,
-        [f"sub-0{i}" for i in range(2, 9)],
+        [f"sub-0{i}" for i in range(1, 9)],
         loc="center right",
         bbox_to_anchor=(1.2, 0.5),
     )
