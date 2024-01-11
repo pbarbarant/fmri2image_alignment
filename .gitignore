@@ -175,3 +175,6 @@ feature_extraction/features
 
 # Metadata
 data/NSD/nsd_stim_info_merged.csv
+
+# Torch models
+runs/
