@@ -87,11 +87,11 @@ plt.show()
 
 # Path to coco annotations
 annotations_path = Path(
-    "/storage/store3/data/natural_scenes/info/coco_annotations/coco_categories.pkl"
+    "/data/parietal/store3/data/natural_scenes/info/coco_annotations/coco_categories.pkl"
 )
 
 metadata_path = Path(
-    "/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
+    "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
 )
 
 # Load annotations

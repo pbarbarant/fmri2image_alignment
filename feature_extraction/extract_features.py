@@ -28,7 +28,7 @@ if __name__ == "__main__":
             source, target, path_to_mapping_folder
         )
         source_features = np.load(
-            f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{source}_shared1000.npy"
+            f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{source}_shared1000.npy"
         )
         projected_source = project_on_target(source_features, mapping)
 
@@ -41,7 +41,7 @@ if __name__ == "__main__":
 
     # Load target features
     target_features = np.load(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{target}_shared1000.npy"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/alignment_data/{target}_shared1000.npy"
     )
 
     # Fit transformed features
@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
     # Save PCA components
     output_folder = Path(
-        "/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/"
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/"
     )
     save_features(
         transformed_features_unaligned_pca_train,
