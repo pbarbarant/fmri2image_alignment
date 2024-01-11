@@ -14,11 +14,11 @@ if __name__ == "__main__":
     for source in sources:
         print(f"Processing {source}")
         source_features = np.load(
-            f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{source}.npy"
+            f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{source}.npy"
         )
 
         projected_source = np.load(
-            f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/projected_features/{source}_{target}.npy"
+            f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/projected_features/{source}_{target}.npy"
         )
 
         # Append features
@@ -30,7 +30,7 @@ if __name__ == "__main__":
 
     # Load target features
     target_features = np.load(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{target}.npy"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{target}.npy"
     )
 
     # Append target features
@@ -100,7 +100,7 @@ if __name__ == "__main__":
     fig.tight_layout()
     fig.subplots_adjust(top=0.9)
     plt.savefig(
-        "/storage/store3/work/pbarbara/fmri2image_alignment/figures/umap_projection.png",
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/umap_projection.png",
         bbox_inches="tight",
     )
     plt.show()
