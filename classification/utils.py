@@ -18,10 +18,10 @@ def load_features_from_model(model="pca_unaligned"):
         Features
     """
     X_train = np.load(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/{model}/extracted_features_train.npy"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/{model}/extracted_features_train.npy"
     )
     X_test = np.load(
-        f"/storage/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/{model}/extracted_features_test.npy"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/feature_extraction/features/{model}/extracted_features_test.npy"
     )
     return X_train, X_test
 
@@ -36,11 +36,11 @@ def load_labels_share1000():
     """
     # Path to coco annotations
     annotations_path = Path(
-        "/storage/store3/data/natural_scenes/info/coco_annotations/coco_categories.pkl"
+        "/data/parietal/store3/data/natural_scenes/info/coco_annotations/coco_categories.pkl"
     )
 
     metadata_path = Path(
-        "/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
     )
 
     # Load annotations
