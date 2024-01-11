@@ -178,3 +178,6 @@ data/NSD/nsd_stim_info_merged.csv
 
 # Torch models
 runs/
+
+# Weights and biases
+wandb/
