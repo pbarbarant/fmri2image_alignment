@@ -164,6 +164,7 @@ data/NSD/stimuli/
 data/NSD/alignment_data/
 data/NSD/masked_subjects/
 data/NSD/projected_features/
+data/NSD/dataset*/
 data/COCO/
 
 # Mappings
