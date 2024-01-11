@@ -1,7 +1,6 @@
 # %%
 
 import os
-import numpy as np
 import wandb
 import torch
 import torch.nn as nn
@@ -10,7 +9,9 @@ from torch import optim
 from utils import plot_images, save_images, setup_logging, get_data
 from modules import UNet_conditional
 import logging
-from torch.utils.tensorboard import SummaryWriter
+
+from accelerate import Accelerator
+
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s: %(message)s",
@@ -88,16 +89,22 @@ class Diffusion:
 
 def train(args):
     setup_logging(args.run_name)
-    device = args.device
+
+    accelerator = Accelerator(mixed_precision="fp16")
+    device = accelerator.device
+
     train_dataloader, test_dataloader = get_data(args)
     model = UNet_conditional(mri_dim=args.mri_dim)
-    # model = nn.DataParallel(model)
+    model = nn.DataParallel(model)
     model = model.to(device)
     optimizer = optim.AdamW(model.parameters(), lr=args.lr)
     mse = nn.MSELoss()
     diffusion = Diffusion(img_size=args.image_size, device=device)
     length = len(train_dataloader)
 
+    model, optimizer, train_dataloader = accelerator.prepare(
+        model, optimizer, train_dataloader
+    )
 
     for epoch in range(args.epochs):
         logging.info(f"Starting epoch {epoch}:")
@@ -113,16 +120,15 @@ def train(args):
             predicted_noise = model(x_t, t, fmris)
             loss = mse(noise, predicted_noise)
 
-            optimizer.zero_grad()
-            loss.backward()
+            accelerator.backward(loss)
             optimizer.step()
 
             pbar.set_postfix(MSE=loss.item())
             wandb.log({"MSE": loss.item()}, step=epoch * length + i)
 
         if epoch % 10 == 0:
-            labels = torch.arange(10).long().to(device)
-            sampled_images = diffusion.sample(model, n=1, labels=labels)
+            fmris = next(iter(test_dataloader))["fmri"][:5].to(device)
+            sampled_images = diffusion.sample(model, n=5, y=fmris)
             plot_images(sampled_images)
             save_images(
                 sampled_images,
@@ -149,10 +155,10 @@ def launch():
     args = parser.parse_args()
     args.run_name = "DDPM_conditional_unaligned"
     args.epochs = 300
-    args.batch_size = 8  # 32
+    args.batch_size = 32
     args.image_size = 64
     args.mri_dim = 19450
-    args.dataset_path = r"/storage/store3/work/pbarbara/fmri2image_alignment/data/NSD/dataset_unaligned/dataset.csv"
+    args.dataset_path = r"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/dataset_unaligned/dataset.csv"
     args.device = "cuda"
     args.lr = 3e-4
     train(args)
@@ -160,7 +166,11 @@ def launch():
 
 if __name__ == "__main__":
     # Initialize WandB
-    wandb.init(project="fmri2image_alignment", name="diffusion_unaligned")
+    wandb.init(
+        project="fmri2image_alignment",
+        name="diffusion_unaligned",
+        # mode="disabled",
+    )
     launch()
     wandb.finish()
     # device = "cuda"
