@@ -41,7 +41,7 @@ if __name__ == "__main__":
     )
 
     labels = np.concatenate(
-        [i * np.ones(len(source_features)) for i in range(1, 9)]
+        [i * np.ones(len(target_features)) for i in range(1, 9)]
     )
     print(labels.shape)
 
@@ -69,24 +69,14 @@ if __name__ == "__main__":
     ax[0].set_title("Unaligned data")
     ax[0].set_aspect("equal", "datalim")
 
-    ax[1].scatter(
+    scatter = ax[1].scatter(
         transformed_features_aligned_umap[:, 0],
         transformed_features_aligned_umap[:, 1],
         c=labels,
         cmap="tab10",
     )
     ax[1].set_title("Aligned data")
-
-    # Add legend to colors
-    # Load handles from tab10 colormap
-    handles = [
-        plt.scatter(
-            [None, None],
-            [None, None],
-            color=c,
-        )
-        for c in plt.cm.tab10(np.arange(10))
-    ]
+    handles, _ = scatter.legend_elements(prop="colors", alpha=1)
     ax[1].legend(
         handles,
         [f"sub-0{i}" for i in range(1, 9)],
