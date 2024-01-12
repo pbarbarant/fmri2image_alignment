@@ -88,7 +88,7 @@ class Diffusion:
 def train(args):
     setup_logging(args.run_name)
 
-    accelerator = Accelerator(mixed_precision="fp16")
+    accelerator = Accelerator(cpu=False, mixed_precision="fp16")
     device = accelerator.device
 
     train_dataloader, test_dataloader = get_data(args)
