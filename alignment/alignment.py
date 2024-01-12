@@ -81,7 +81,7 @@ if __name__ == "__main__":
 
     # Load visual mask
     mni152_mask = nib.load(
-        "/storage/store2/work/tbazeill/cneuromod_wm_5mm/gm_visual_mask.nii.gz"
+        "/data/parietal/store2/work/tbazeill/cneuromod_wm_5mm/gm_visual_mask.nii.gz"
     )
     connected_mask = masking.compute_background_mask(
         mni152_mask, connected=True
