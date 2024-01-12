@@ -4,8 +4,11 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.metrics import (ConfusionMatrixDisplay, classification_report,
-                             confusion_matrix)
+from sklearn.metrics import (
+    ConfusionMatrixDisplay,
+    classification_report,
+    confusion_matrix,
+)
 from sklearn.preprocessing import StandardScaler
 from sklearn.svm import LinearSVC
 from utils import load_features_from_model, load_labels_share1000
@@ -60,7 +63,8 @@ def evaluate_model(model, n_components=1024, verbose=True):
 
     # Save plot
     plt.savefig(
-        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/{model}.png"
+        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/{model}.png",
+        bbox_inches="tight",
     )
 
     # Save report to csv
