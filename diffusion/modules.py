@@ -145,57 +145,25 @@ class FmriEncoder(nn.Module):
         return x
 
 
-class FmriEncoderWithMultiheadAttention(nn.Module):
+class FmriRidgeEncoder(nn.Module):
     def __init__(
         self,
-        input_dim=1024,  # Assuming input_dim is the number of voxels
+        input_dim=1024,
         time_dim=256,
-        num_heads=8,
+        alpha=1,
     ):
         super().__init__()
         self.input_dim = input_dim
         self.time_dim = time_dim
-        self.num_heads = num_heads
-
-        # Linear projections for query, key, and value
-        self.query_linear = nn.Linear(input_dim, input_dim * num_heads)
-        self.key_linear = nn.Linear(input_dim, input_dim * num_heads)
-        self.value_linear = nn.Linear(input_dim, input_dim * num_heads)
-
-        # MultiheadAttention layer
-        self.multihead_attention = nn.MultiheadAttention(
-            embed_dim=input_dim * num_heads, num_heads=num_heads
-        )
-
-        # Linear layer after multihead attention
-        self.out_linear = nn.Linear(input_dim * num_heads, time_dim)
-
-        # Batch Normalization layer
-        self.bn = nn.BatchNorm1d(time_dim)
+        self.fc = nn.Linear(input_dim, time_dim, bias=False)
+        self.alpha = alpha
 
     def forward(self, x):
-        # Linear projections
-        query = self.query_linear(x)
-        key = self.key_linear(x)
-        value = self.value_linear(x)
+        x = self.fc(x)
+        return x
 
-        # Reshape projections for multi-head attention
-        query = query.view(-1, self.num_heads, self.input_dim)
-        key = key.view(-1, self.num_heads, self.input_dim)
-        value = value.view(-1, self.num_heads, self.input_dim)
-
-        # Multihead Attention
-        attention_output, _ = self.multihead_attention(query, key, value)
-
-        # Reshape back to (n_samples, input_dim * num_heads)
-        attention_output = attention_output.view(
-            -1, self.num_heads * self.input_dim
-        )
-
-        # Linear transformation and Batch Normalization
-        output = self.bn(self.out_linear(attention_output))
-
-        return output
+    def l2_regularization(self):
+        return self.alpha * torch.norm(self.fc.weight, p=2)
 
 
 class UNet_conditional(nn.Module):
@@ -230,7 +198,7 @@ class UNet_conditional(nn.Module):
         self.sa6 = SelfAttention(64, 64)
         self.outc = nn.Conv2d(64, c_out, kernel_size=1)
 
-        self.fmri_emb = FmriEncoder(mri_dim, time_dim)
+        self.fmri_emb = FmriRidgeEncoder(mri_dim, time_dim)
 
     def pos_encoding(self, t, channels):
         inv_freq = 1.0 / (
