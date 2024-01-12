@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 from tqdm import tqdm
+from sklearn.preprocessing import StandardScaler
 
 metadata = pd.read_csv(
     "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
@@ -27,7 +28,10 @@ for sub in subjects:
     fmri_data = np.load(
         f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/sub-0{sub}.npy"
     )
+    # Scale the fmri data
     N = fmri_data.shape[0]
+    se = StandardScaler()
+    fmri_data = se.fit_transform(fmri_data)
 
     # Get the image data
     image_folder = Path(
@@ -101,7 +105,10 @@ for sub in subjects:
         fmri_data = np.load(
             f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/projected_features/sub-0{sub}_{target}.npy"
         )
+    # Scale the fmri data
     N = fmri_data.shape[0]
+    se = StandardScaler()
+    fmri_data = se.fit_transform(fmri_data)
 
     # Get the image data
     image_folder = Path(
