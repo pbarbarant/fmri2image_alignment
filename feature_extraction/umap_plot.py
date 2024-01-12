@@ -65,6 +65,7 @@ if __name__ == "__main__":
         transformed_features_unaligned_umap[:, 1],
         c=labels,
         cmap="tab10",
+        s=2,
     )
     ax[0].set_title("Unaligned data")
     ax[0].set_aspect("equal", "datalim")
@@ -74,6 +75,7 @@ if __name__ == "__main__":
         transformed_features_aligned_umap[:, 1],
         c=labels,
         cmap="tab10",
+        s=2,
     )
     ax[1].set_title("Aligned data")
     handles, _ = scatter.legend_elements(prop="colors", alpha=1)
