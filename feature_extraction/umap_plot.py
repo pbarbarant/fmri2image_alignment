@@ -2,11 +2,13 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import umap
+from sklearn.preprocessing import StandardScaler
 
 if __name__ == "__main__":
     # Load features
     target = "sub-01"
     sources = [f"sub-0{i}" for i in range(2, 9)]
+    se = StandardScaler()
 
     features_aligned = []
     features_unaligned = []
@@ -20,6 +22,9 @@ if __name__ == "__main__":
             f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/projected_features/{source}_{target}.npy"
         )
 
+        source_features = se.fit_transform(source_features)
+        projected_source = se.fit_transform(projected_source)
+
         # Append features
         features_unaligned.append(source_features)
         features_aligned.append(projected_source)
@@ -31,6 +36,7 @@ if __name__ == "__main__":
     target_features = np.load(
         f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/{target}.npy"
     )
+    target_features = se.fit_transform(target_features)
 
     # Append target features
     stack_features_unaligned = np.concatenate(
