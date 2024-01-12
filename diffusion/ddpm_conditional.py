@@ -116,7 +116,10 @@ def train(args):
             t = diffusion.sample_timesteps(images.shape[0]).to(device)
             x_t, noise = diffusion.noise_images(images, t)
             predicted_noise = model(x_t, t, fmris)
-            loss = mse(noise, predicted_noise)
+            loss = (
+                mse(noise, predicted_noise)
+                + model.fmri_emb.l2_regularization()
+            )
 
             accelerator.backward(loss)
             optimizer.step()
