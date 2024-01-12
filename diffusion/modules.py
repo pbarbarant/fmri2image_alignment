@@ -150,20 +150,18 @@ class FmriRidgeEncoder(nn.Module):
         self,
         input_dim=1024,
         time_dim=256,
-        alpha=1,
     ):
         super().__init__()
         self.input_dim = input_dim
         self.time_dim = time_dim
         self.fc = nn.Linear(input_dim, time_dim, bias=False)
-        self.alpha = alpha
 
     def forward(self, x):
         x = self.fc(x)
         return x
 
-    def l2_regularization(self):
-        return self.alpha * torch.norm(self.fc.weight, p=2)
+    def l2_regularization(self, alpha=1):
+        return alpha * torch.norm(self.fc.weight, p=2)
 
 
 class UNet_conditional(nn.Module):
