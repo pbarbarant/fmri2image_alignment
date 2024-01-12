@@ -1,7 +1,8 @@
-import numpy as np
-import pandas as pd
 import pickle as pkl
 from pathlib import Path
+
+import numpy as np
+import pandas as pd
 
 
 def load_features_from_model(model="pca_unaligned"):

@@ -2,14 +2,9 @@
 from pathlib import Path
 
 import numpy as np
-
-from utils import (
-    compute_transformed_features_ica,
-    compute_transformed_features_pca,
-    load_mapping_from_path,
-    project_on_target,
-    save_features,
-)
+from utils import (compute_transformed_features_ica,
+                   compute_transformed_features_pca, load_mapping_from_path,
+                   project_on_target, save_features)
 
 if __name__ == "__main__":
     # Load features

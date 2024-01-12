@@ -2,9 +2,9 @@ from pathlib import Path
 
 import numpy as np
 from fugw.utils import load_mapping
+from joblib import dump
 from sklearn.decomposition import PCA, FastICA
 from sklearn.preprocessing import StandardScaler
-from joblib import dump
 
 
 def load_mapping_from_path(source, target, path):

@@ -1,8 +1,9 @@
-import numpy as np
-import nibabel as nib
-from nilearn import maskers, masking
 from pathlib import Path
+
+import nibabel as nib
+import numpy as np
 from joblib import Memory
+from nilearn import maskers, masking
 
 
 def load_subject_NSD(subject_name, verbose=True):

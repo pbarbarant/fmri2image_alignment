@@ -1,8 +1,7 @@
 # %%
+import matplotlib.pyplot as plt
 import numpy as np
 import umap
-import matplotlib.pyplot as plt
-
 
 if __name__ == "__main__":
     # Load features

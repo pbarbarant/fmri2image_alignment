@@ -1,13 +1,14 @@
 # %%
-from sklearn.svm import LinearSVC
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import classification_report
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-import matplotlib.pyplot as plt
-import pandas as pd
-from utils import load_features_from_model, load_labels_share1000
 from pathlib import Path
+
+import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+from sklearn.metrics import (ConfusionMatrixDisplay, classification_report,
+                             confusion_matrix)
+from sklearn.preprocessing import StandardScaler
+from sklearn.svm import LinearSVC
+from utils import load_features_from_model, load_labels_share1000
 
 
 def evaluate_model(model, n_components=1024, verbose=True):

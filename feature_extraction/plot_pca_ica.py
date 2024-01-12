@@ -1,12 +1,11 @@
 # %%
+import pickle as pkl
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import pickle as pkl
 from sklearn.preprocessing import LabelEncoder
-
 
 # Paths to pca and ica features
 ica_aligned_path = Path(
