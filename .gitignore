@@ -172,6 +172,7 @@ alignment/mappings/
 
 # Features
 feature_extraction/features
+feature_extraction/umap_components
 
 # Metadata
 data/NSD/nsd_stim_info_merged.csv
