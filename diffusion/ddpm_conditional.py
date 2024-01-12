@@ -1,15 +1,15 @@
+import logging
 import os
-import wandb
+
 import torch
 import torch.nn as nn
-from tqdm import tqdm
-from torch import optim
-from utils import plot_images, save_images, setup_logging, get_data
-from modules import UNet_conditional
-import logging
-
 from accelerate import Accelerator
+from modules import UNet_conditional
+from torch import optim
+from tqdm import tqdm
+from utils import get_data, plot_images, save_images, setup_logging
 
+import wandb
 
 logging.basicConfig(
     format="%(asctime)s - %(levelname)s: %(message)s",

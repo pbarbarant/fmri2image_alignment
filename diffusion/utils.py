@@ -1,12 +1,13 @@
 # %%
 import os
+
+import numpy as np
+import pandas as pd
 import torch
 import torchvision
-from PIL import Image
 from matplotlib import pyplot as plt
+from PIL import Image
 from torch.utils.data import DataLoader, Dataset
-import pandas as pd
-import numpy as np
 
 
 class FmriDataset(Dataset):
