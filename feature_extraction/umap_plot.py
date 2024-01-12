@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import umap
 from sklearn.preprocessing import StandardScaler
+from pathlib import Path
 
 if __name__ == "__main__":
     # Load features
@@ -72,6 +73,7 @@ if __name__ == "__main__":
         c=labels,
         cmap="tab10",
         s=2,
+        alpha=0.5,
     )
     ax[0].set_title("Unaligned data")
     ax[0].set_aspect("equal", "datalim")
@@ -82,9 +84,10 @@ if __name__ == "__main__":
         c=labels,
         cmap="tab10",
         s=2,
+        alpha=0.5,
     )
     ax[1].set_title("Aligned data")
-    handles, _ = scatter.legend_elements(prop="colors", alpha=1)
+    handles, _ = scatter.legend_elements(prop="colors", alpha=0.5)
     ax[1].legend(
         handles,
         [f"sub-0{i}" for i in range(1, 9)],
@@ -101,3 +104,24 @@ if __name__ == "__main__":
         bbox_inches="tight",
     )
     plt.show()
+
+    # Save the components
+    saving_folder = Path(
+        "/data/parietal/store3/work/pbarbara/fmri2image_alignment/feature_extraction/umap_components"
+    )
+    if not saving_folder.exists():
+        saving_folder.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+    print("Saving components")
+    np.save(
+        saving_folder / "umap_components_unaligned.npy",
+        transformed_features_unaligned_umap,
+    )
+
+    np.save(
+        saving_folder / "umap_components_aligned.npy",
+        transformed_features_aligned_umap,
+    )
