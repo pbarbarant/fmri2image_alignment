@@ -104,21 +104,43 @@ def train(args):
         model, optimizer, train_dataloader
     )
 
+    torch.autograd.set_detect_anomaly(True)
+
     for epoch in range(args.epochs):
         logging.info(f"Starting epoch {epoch}:")
         pbar = tqdm(train_dataloader)
+
+        # Freeze all layers except the diffusion layers
+        if epoch < args.freeze_after_epoch:
+            logging.info("Freezing only the fmri embedding layer")
+            for name, param in model.module.named_parameters():
+                if name.startswith("fmri_emb"):
+                    param.requires_grad = False
+                else:
+                    param.requires_grad = True
+        else:
+            logging.info("Freezing all layers except the fmri embedding layer")
+            for name, param in model.module.named_parameters():
+                if not name.startswith("fmri_emb"):
+                    param.requires_grad = False
+                else:
+                    param.requires_grad = True
+
         for i, batch in enumerate(pbar):
             optimizer.zero_grad()
             images = batch["image"]
-            fmris = batch["fmri"]
             images = images.to(device)
-            fmris = fmris.to(device)
+
+            fmris = None
+            if epoch >= args.freeze_after_epoch:
+                fmris = batch["fmri"]
+                fmris = fmris.to(device)
+
             t = diffusion.sample_timesteps(images.shape[0]).to(device)
             x_t, noise = diffusion.noise_images(images, t)
             predicted_noise = model(x_t, t, fmris)
-            loss = mse(
-                noise, predicted_noise
-            ) + model.module.fmri_emb.l2_regularization(alpha=1e6)
+
+            loss = mse(predicted_noise, noise)
 
             accelerator.backward(loss)
             optimizer.step()
@@ -127,7 +149,9 @@ def train(args):
             wandb.log({"MSE": loss.item()}, step=epoch * length + i)
 
         if epoch % 10 == 0:
-            fmris = next(iter(test_dataloader))["fmri"][:5].to(device)
+            fmris = None
+            if epoch >= args.freeze_after_epoch:
+                fmris = next(iter(test_dataloader))["fmri"][:5].to(device)
             sampled_images = diffusion.sample(model, n=5, y=fmris)
             plot_images(sampled_images)
             save_images(
