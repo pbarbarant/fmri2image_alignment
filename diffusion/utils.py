@@ -51,18 +51,24 @@ def get_data(args):
     )
 
     train_dataset = FmriDataset(
-        args.dataset_path, split="train", transform=transforms
+        args.dataset_path, split="test", transform=transforms
     )
     test_dataset = FmriDataset(
-        args.dataset_path, split="test", transform=transforms
+        args.dataset_path, split="train", transform=transforms
     )
 
     batch_size = args.batch_size
     train_dataloader = DataLoader(
-        train_dataset, batch_size=batch_size, shuffle=True
+        train_dataset,
+        batch_size=batch_size,
+        shuffle=True,
+        num_workers=16,
     )
     test_dataloader = DataLoader(
-        test_dataset, batch_size=batch_size, shuffle=False
+        test_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=16,
     )
 
     return train_dataloader, test_dataloader
