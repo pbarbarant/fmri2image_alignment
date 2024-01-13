@@ -15,6 +15,14 @@ df = pd.DataFrame(
     columns=["subject", "image_path", "fmri_path", "split", "shared1000"]
 )
 subjects = list(range(1, 9))
+# Get the fmri data
+fmri_data = np.load(
+    "/data/parietal/store3/work/pbarbara/fmri2image_alignment/feature_extraction/umap_components/umap_components_unaligned.npy"
+)
+# Scale the fmri data
+N = fmri_data.shape[0] // 8
+se = StandardScaler()
+fmri_data = se.fit_transform(fmri_data)
 
 for sub in subjects:
     print(f"Processing subject {sub}")
@@ -23,15 +31,6 @@ for sub in subjects:
         f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/dataset_unaligned/fMRI/sub-0{sub}"
     )
     sub_fmri_folder.mkdir(parents=True, exist_ok=True)
-
-    # Get the fmri data
-    fmri_data = np.load(
-        f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/sub-0{sub}.npy"
-    )
-    # Scale the fmri data
-    N = fmri_data.shape[0]
-    se = StandardScaler()
-    fmri_data = se.fit_transform(fmri_data)
 
     # Get the image data
     image_folder = Path(
@@ -49,7 +48,7 @@ for sub in subjects:
     ]
 
     for idx in tqdm(range(N)):
-        fmri = fmri_data[idx]
+        fmri = fmri_data[(sub - 1) * N + idx]
         # Find the row and column that contains idx+1
         row_id = metadata_subject.isin([idx + 1]).any(axis=1)
         # Get the nsdId
@@ -87,6 +86,14 @@ df = pd.DataFrame(
 subjects = list(range(1, 9))
 target = "sub-01"
 
+# Get the fmri data
+fmri_data = np.load(
+    "/data/parietal/store3/work/pbarbara/fmri2image_alignment/feature_extraction/umap_components/umap_components_aligned.npy"
+)
+# Scale the fmri data
+N = fmri_data.shape[0] // 8
+se = StandardScaler()
+fmri_data = se.fit_transform(fmri_data)
 for sub in subjects:
     print(f"Processing subject {sub}")
     # Create the subject folder
@@ -94,21 +101,6 @@ for sub in subjects:
         f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/dataset_aligned/fMRI/sub-0{sub}"
     )
     sub_fmri_folder.mkdir(parents=True, exist_ok=True)
-
-    if f"sub-0{sub}" == target:
-        # Get the fmri data
-        fmri_data = np.load(
-            f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/masked_subjects/sub-0{sub}.npy"
-        )
-    else:
-        # Get the fmri data
-        fmri_data = np.load(
-            f"/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/projected_features/sub-0{sub}_{target}.npy"
-        )
-    # Scale the fmri data
-    N = fmri_data.shape[0]
-    se = StandardScaler()
-    fmri_data = se.fit_transform(fmri_data)
 
     # Get the image data
     image_folder = Path(
@@ -126,7 +118,7 @@ for sub in subjects:
     ]
 
     for idx in tqdm(range(N)):
-        fmri = fmri_data[idx]
+        fmri = fmri_data[(sub - 1) * N + idx]
         # Find the row and column that contains idx+1
         row_id = metadata_subject.isin([idx + 1]).any(axis=1)
         # Get the nsdId
