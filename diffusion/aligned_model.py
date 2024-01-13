@@ -9,7 +9,8 @@ def launch():
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
     args.run_name = "DDPM_conditional_aligned"
-    args.epochs = 300
+    args.epochs = 600
+    args.freeze_after_epoch = 300
     args.batch_size = 32
     args.image_size = 64
     args.mri_dim = 19450
