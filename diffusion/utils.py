@@ -15,7 +15,7 @@ class FmriDataset(Dataset):
         self.df = pd.read_csv(csv_file)
         self.transform = transform
         self.filtered_data = self.df[
-            (self.df["split"] == split) & (self.df["shared1000"] == True)
+            (self.df["split"] == split) & (self.df["shared1000"] == False)
         ]
 
     def __len__(self):
