@@ -164,6 +164,28 @@ class FmriRidgeEncoder(nn.Module):
         return alpha * torch.norm(self.fc.weight, p=2)
 
 
+class FmriNormEncoder(nn.Module):
+    def __init__(
+        self,
+        input_dim=1024,
+        time_dim=256,
+        scale=1,
+    ):
+        super().__init__()
+        self.input_dim = input_dim
+        self.time_dim = time_dim
+        self.fc = nn.utils.weight_norm(
+            nn.Linear(input_dim, time_dim, bias=False),
+            name="weight",
+            dim=0,
+        )
+        self.scale = nn.Parameter(torch.Tensor([scale]))
+
+    def forward(self, x):
+        x = self.scale * self.fc(x)
+        return x
+
+
 class UNet_conditional(nn.Module):
     def __init__(
         self,
@@ -196,7 +218,7 @@ class UNet_conditional(nn.Module):
         self.sa6 = SelfAttention(64, 64)
         self.outc = nn.Conv2d(64, c_out, kernel_size=1)
 
-        self.fmri_emb = FmriRidgeEncoder(mri_dim, time_dim)
+        self.fmri_emb = FmriEncoder(mri_dim, time_dim)
 
     def pos_encoding(self, t, channels):
         inv_freq = 1.0 / (
@@ -214,7 +236,8 @@ class UNet_conditional(nn.Module):
     def forward(self, x, t, y):
         t = t.unsqueeze(-1).type(torch.float)
         t = self.pos_encoding(t, self.time_dim)
-        t += self.fmri_emb(y)
+        if y is not None:
+            t += self.fmri_emb(y)
 
         x1 = self.inc(x)
         x2 = self.down1(x1, t)
