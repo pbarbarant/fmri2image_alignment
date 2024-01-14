@@ -1,8 +1,8 @@
 # %%
-import numpy as np
-from fugw.utils import load_mapping
 from pathlib import Path
 
+import numpy as np
+from fugw.utils import load_mapping
 
 if __name__ == "__main__":
     target = "sub-01"

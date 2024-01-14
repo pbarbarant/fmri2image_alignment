@@ -1,5 +1,5 @@
-import torch
 import numpy as np
+import torch
 from fugw.mappings import FUGW, FUGWSparse
 from fugw.scripts import coarse_to_fine, lmds
 from nilearn import masking

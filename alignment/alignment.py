@@ -1,12 +1,13 @@
 # %%
 import os
 from pathlib import Path
-from utils import FugwAlignment
-from nilearn import maskers, masking
-from fugw.utils import save_mapping
+
 import nibabel as nib
 import numpy as np
+from fugw.utils import save_mapping
 from joblib import Memory
+from nilearn import maskers, masking
+from utils import FugwAlignment
 
 
 def compute_pairwise_mapping(source, target, masker, mapping_path):
