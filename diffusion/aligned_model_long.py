@@ -8,7 +8,7 @@ def launch():
 
     parser = argparse.ArgumentParser()
     args = parser.parse_args()
-    args.run_name = "DDPM_conditional_aligned"
+    args.run_name = "DDPM_conditional_aligned_long"
     args.epochs = 2000
     args.freeze_after_epoch = 1000
     args.batch_size = 32
@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # Initialize WandB
     wandb.init(
         project="fmri2image_alignment",
-        name="diffusion_aligned",
+        name="diffusion_aligned_long",
         # mode="disabled",
     )
     launch()
