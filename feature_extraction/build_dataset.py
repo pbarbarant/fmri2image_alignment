@@ -1,9 +1,10 @@
 # %%
+from pathlib import Path
+
 import numpy as np
 import pandas as pd
-from pathlib import Path
-from tqdm import tqdm
 from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
 
 metadata = pd.read_csv(
     "/data/parietal/store3/work/pbarbara/fmri2image_alignment/data/NSD/nsd_stim_info_merged.csv"
