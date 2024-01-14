@@ -1,9 +1,10 @@
 # %%
+from pathlib import Path
+
 import matplotlib.pyplot as plt
 import numpy as np
 import umap
 from sklearn.preprocessing import StandardScaler
-from pathlib import Path
 
 if __name__ == "__main__":
     # Load features
