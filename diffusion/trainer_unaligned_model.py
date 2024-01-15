@@ -25,7 +25,7 @@ if __name__ == "__main__":
     # Initialize WandB
     wandb.init(
         project="fmri2image_alignment",
-        name="aligned_embeddings",
+        name="unaligned_embeddings",
         # mode="disabled",
     )
     launch()
