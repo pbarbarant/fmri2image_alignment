@@ -12,7 +12,7 @@ def plot_surface_map(
     volume, vmin=-5, vmax=5, colorbar=True, cmap="coolwarm", **kwargs
 ):
     # Load fsaverage surface
-    fsaverage = datasets.fetch_surf_fsaverage("fsaverage5")
+    fsaverage = datasets.fetch_surf_fsaverage("fsaverage7")
     # Project to surface
     surface_map = surface.vol_to_surf(volume, fsaverage.pial_left)
 
@@ -77,7 +77,9 @@ if __name__ == "__main__":
         assert path.exists(), f"Path {path} does not exist"
 
     # Load contrast 2616 for each subject
+    print("Loading contrasts...")
     contrasts = [image.index_img(path, index=2616) for path in subject_paths]
+    print("Successfully loaded contrasts")
     fig = generate_fig(contrasts)
     fig.tight_layout()
     fig.savefig(
@@ -85,3 +87,4 @@ if __name__ == "__main__":
         dpi=300,
         bbox_inches="tight",
     )
+    print("Successfully saved figure")
