@@ -84,10 +84,10 @@ if __name__ == "__main__":
     print("Successfully loaded contrasts")
     # Renormalize contrasts
     contrasts = [
-        image.math_img("img / img.max()", img=contrast)
+        image.math_img("img / img.std()", img=contrast)
         for contrast in contrasts
     ]
-    fig = generate_fig(contrasts, vmin=-1, vmax=1)
+    fig = generate_fig(contrasts, vmin=-5, vmax=5)
     fig.tight_layout()
     fig.savefig(
         "/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/inter_individual_diff.png",
