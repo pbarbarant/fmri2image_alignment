@@ -87,7 +87,7 @@ if __name__ == "__main__":
         image.math_img("img / img.std()", img=contrast)
         for contrast in contrasts
     ]
-    fig = generate_fig(contrasts, vmin=-5, vmax=5)
+    fig = generate_fig(contrasts, vmin=-3, vmax=3)
     fig.tight_layout()
     fig.savefig(
         "/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/inter_individual_diff.png",
