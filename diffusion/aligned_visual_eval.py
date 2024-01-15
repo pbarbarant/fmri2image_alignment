@@ -95,7 +95,7 @@ if __name__ == "__main__":
         plt.subplots_adjust(wspace=0, hspace=0)
         # Save the image in the results folder
         out_path = Path(
-            "/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/aligned_visual_val"
+            "/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/aligned_visual_eval"
         )
         plt.savefig(
             out_path / f"{i}.png",
