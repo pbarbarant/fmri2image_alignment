@@ -192,7 +192,7 @@ class UNet_conditional(nn.Module):
         c_in=3,
         c_out=3,
         time_dim=256,
-        mri_dim=1024,
+        mri_dim=2,
         device="cuda",
     ):
         super().__init__()
@@ -262,7 +262,7 @@ class UNet_conditional(nn.Module):
 
 
 if __name__ == "__main__":
-    net = UNet_conditional(mri_dim=1024, device="cpu")
+    net = UNet_conditional(mri_dim=2, device="cpu")
     print(sum([p.numel() for p in net.parameters()]))
     x = torch.randn(30, 3, 64, 64, dtype=torch.float32)
     t = x.new_tensor([500] * x.shape[0]).long()
