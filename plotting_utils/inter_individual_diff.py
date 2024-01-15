@@ -35,7 +35,7 @@ def plot_surface_map(
     )
 
 
-def generate_fig(contrasts):
+def generate_fig(contrasts, vmin=10, vmax=-10):
     fig = plt.figure(figsize=(3 * len(contrasts), 3))
     fig.suptitle(
         "Inter-individual differences in brain activity (NSD dataset)"
@@ -45,7 +45,9 @@ def generate_fig(contrasts):
     for i, contrast in enumerate(contrasts):
         ax = fig.add_subplot(grid_spec[0, i], projection="3d")
         ax.set_title(f"Subject {i+1}")
-        plot_surface_map(contrast, axes=ax, colorbar=False, vmax=10, vmin=-10)
+        plot_surface_map(
+            contrast, axes=ax, colorbar=False, vmax=vmax, vmin=vmin
+        )
 
     # Add colorbar
     ax = fig.add_subplot(grid_spec[0, :])
@@ -55,7 +57,7 @@ def generate_fig(contrasts):
     fig.add_axes(cax)
     fig.colorbar(
         mpl.cm.ScalarMappable(
-            norm=mpl.colors.Normalize(vmin=-10, vmax=10), cmap="coolwarm"
+            norm=mpl.colors.Normalize(vmin=vmin, vmax=vmax), cmap="coolwarm"
         ),
         cax=cax,
     )
@@ -80,7 +82,12 @@ if __name__ == "__main__":
     print("Loading contrasts...")
     contrasts = [image.index_img(path, index=2616) for path in subject_paths]
     print("Successfully loaded contrasts")
-    fig = generate_fig(contrasts)
+    # Renormalize contrasts
+    contrasts = [
+        image.math_img("img / img.max()", img=contrast)
+        for contrast in contrasts
+    ]
+    fig = generate_fig(contrasts, vmin=-1, vmax=1)
     fig.tight_layout()
     fig.savefig(
         "/data/parietal/store3/work/pbarbara/fmri2image_alignment/figures/inter_individual_diff.png",
