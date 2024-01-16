@@ -6,11 +6,11 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from ddpm import Diffusion
+from ignite.metrics import FID, SSIM
 from modules import UNet_conditional
 from PIL import Image
-from torchvision import transforms
 from scipy.linalg import sqrtm
-from ignite.metrics import SSIM, FID
+from torchvision import transforms
 from torchvision.models import inception_v3
 
 
