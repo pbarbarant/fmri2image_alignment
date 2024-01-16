@@ -172,12 +172,14 @@ if __name__ == "__main__":
     fmri_all_subjects, image_paths = retrieve_all_subjects(N=N)
     print("Successfully retrieved all subjects test data")
 
+    # Preprocess the image
     image = get_image(image_paths[0])
     image = image.resize((64, 64))
     image = np.array(image)
     image = np.repeat(image[np.newaxis, ...], 8, axis=0)
 
     y_true = torch.Tensor(np.array(image)).to(device).float()
+    # Permutes the dimensions to match the diffusion model
     y_true = y_true.permute(0, 3, 1, 2)
     y_pred = diffusion.sample(model, 8, fmri_all_subjects[:, 0, ...]).float()
 
