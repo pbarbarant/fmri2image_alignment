@@ -12,7 +12,7 @@ Recent advancements in generative AI have significantly improved image reconstru
 
 ## Instructions for running the experiments
 
-1. Download the [NSD](https://naturalscenesdataset.org) dataset and place the file ``nsd_stim_info_merged.csv`` in the ``data/NSD`` folder. Download the [COCO](https://cocodataset.org/) dataset in the ``data/COCO``folder
+1. Download the [NSD](https://naturalscenesdataset.org) dataset and place the file ``nsd_stim_info_merged.csv`` in the ``data/NSD`` folder. Download the [COCO](https://cocodataset.org/) dataset in the ``data/COCO`` folder.
 2. Launch the data preprocessing steps:
 
    ```
@@ -21,7 +21,6 @@ Recent advancements in generative AI have significantly improved image reconstru
    python mask_dataset.py
    python preprocess_alignment_data.py
    cd ..
-
    ```
 3. Compute the alignment mappings:
 
