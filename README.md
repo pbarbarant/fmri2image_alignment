@@ -1,4 +1,4 @@
-# Optimal Transport Strategies for Overcoming Inter-Subject Variability in fMRI Reconstruction
+# Optimal Transport Strategies for Overcoming Inter-Subject Variability in fMRI Reconstruction 🧠
 
 This repository hosts the code developed for the project titled "Optimal Transport Strategies for Overcoming Inter-Subject Variability in fMRI Reconstruction" carried out as part of the Advanced Machine Learning class in 2024 at ENSAE Paris.
 
