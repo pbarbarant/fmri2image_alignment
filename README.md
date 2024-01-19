@@ -2,13 +2,9 @@
 
 This repository hosts the code developed for the project titled "Optimal Transport Strategies for Overcoming Inter-Subject Variability in fMRI Reconstruction" carried out as part of the Advanced Machine Learning class in 2024 at ENSAE Paris.
 
----
-
 ## Abstract
 
 Recent advancements in generative AI have significantly improved image reconstruction based on functional Magnetic Resonance Imaging (fMRI). However, the persistent challenge of inter-subject variability in large fMRI datasets remains. This study investigates the potential use of optimal transport as a functional alignment tool to address this issue. We explore the novel research question of whether this approach can enhance the performance of generative models in fMRI stimuli reconstruction. Our findings not only reveal the ability of optimal transport in mitigating inter-subject variability but also shows its potential to transfer image semantics between different subjects. This work paves the way for advancing neuroimaging research, offering insights into the intricacies of neural activity representations and paving the way for more precise and personalized fMRI reconstructions across diverse subject populations.
-
----
 
 ## Instructions for running the experiments
 
@@ -70,5 +66,3 @@ Recent advancements in generative AI have significantly improved image reconstru
    python aligned_metric_eval.py
    python unaligned_metric_eval.py
    ```
-
----
