@@ -75,6 +75,7 @@ def get_data(args):
 
 
 def plot_images(images):
+    """Extracted from https://github.com/dome272/Diffusion-Models-pytorch"""
     plt.figure(figsize=(32, 32))
     plt.imshow(
         torch.cat(
@@ -90,6 +91,7 @@ def plot_images(images):
 
 
 def save_images(images, path, **kwargs):
+    """Extracted from https://github.com/dome272/Diffusion-Models-pytorch"""
     grid = torchvision.utils.make_grid(images, **kwargs)
     ndarr = grid.permute(1, 2, 0).to("cpu").numpy()
     im = Image.fromarray(ndarr)
@@ -97,6 +99,7 @@ def save_images(images, path, **kwargs):
 
 
 def setup_logging(run_name):
+    """Extracted from https://github.com/dome272/Diffusion-Models-pytorch"""
     os.makedirs("models", exist_ok=True)
     os.makedirs("results", exist_ok=True)
     os.makedirs(os.path.join("models", run_name), exist_ok=True)
