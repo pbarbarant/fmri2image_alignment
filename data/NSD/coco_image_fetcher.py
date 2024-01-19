@@ -4,6 +4,7 @@ from pathlib import Path
 
 from PIL import Image
 from tqdm import tqdm
+
 from utils import retrieve_metadata
 
 
