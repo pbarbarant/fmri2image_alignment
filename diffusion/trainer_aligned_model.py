@@ -30,15 +30,3 @@ if __name__ == "__main__":
     )
     launch()
     wandb.finish()
-    # device = "cuda"
-    # model = UNet_conditional(mri_dim=2).to(device)
-    # model = nn.DataParallel(model)
-    # ckpt = torch.load(
-    #     "/data/parietal/store3/work/pbarbara/fmri2image_alignment/models/DDPM_conditional_aligned/ckpt.pt"
-    # )
-    # model.load_state_dict(ckpt)
-    # diffusion = Diffusion(img_size=64, device=device)
-    # n = 8
-    # y = torch.Tensor([6] * n).long().to(device)
-    # x = diffusion.sample(model, n, None)
-    # plot_images(x)
