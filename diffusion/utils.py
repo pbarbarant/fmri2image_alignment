@@ -51,10 +51,10 @@ def get_data(args):
     )
 
     train_dataset = FmriDataset(
-        args.dataset_path, split="test", transform=transforms
+        args.dataset_path, split="train", transform=transforms
     )
     test_dataset = FmriDataset(
-        args.dataset_path, split="train", transform=transforms
+        args.dataset_path, split="test", transform=transforms
     )
 
     batch_size = args.batch_size
