@@ -39,7 +39,6 @@ def calculate_fid_score(real_features, generated_features):
         generated_features, dim=0
     ), torch_cov(generated_features, rowvar=False)
 
-    # Calculate Frechet distance
     diff = mu_real - mu_generated
     covmean, _ = sqrtm(sigma_real @ sigma_generated, disp=False)
     if not np.isfinite(covmean).all():
@@ -96,7 +95,6 @@ def compute_fid_list(y_pred_normalized, y_true_normalized):
 
     fid_scores = []
     for i in range(y_pred.shape[0]):
-        # Extract features from InceptionV3
         with torch.no_grad():
             real_features = torch.tensor(
                 inception_model(y_true_resized[i].unsqueeze(0))[0]
