@@ -5,6 +5,8 @@ import torch.nn.functional as F
 
 
 class SelfAttention(nn.Module):
+    """Extracted from https://github.com/dome272/Diffusion-Models-pytorch"""
+
     def __init__(
         self,
         channels,
@@ -34,6 +36,8 @@ class SelfAttention(nn.Module):
 
 
 class DoubleConv(nn.Module):
+    """Extracted from https://github.com/dome272/Diffusion-Models-pytorch"""
+
     def __init__(
         self,
         in_channels,
@@ -69,6 +73,8 @@ class DoubleConv(nn.Module):
 
 
 class Down(nn.Module):
+    """Extracted from https://github.com/dome272/Diffusion-Models-pytorch"""
+
     def __init__(self, in_channels, out_channels, emb_dim=256):
         super().__init__()
         self.maxpool_conv = nn.Sequential(
@@ -91,6 +97,8 @@ class Down(nn.Module):
 
 
 class Up(nn.Module):
+    """Extracted from https://github.com/dome272/Diffusion-Models-pytorch"""
+
     def __init__(
         self,
         in_channels,
@@ -142,47 +150,6 @@ class FmriEncoder(nn.Module):
         x = F.gelu(self.bn1(self.fc1(x)))
         x = F.gelu(self.bn2(self.fc2(x)))
         x = self.bn3(self.fc3(x))
-        return x
-
-
-class FmriRidgeEncoder(nn.Module):
-    def __init__(
-        self,
-        input_dim=1024,
-        time_dim=256,
-    ):
-        super().__init__()
-        self.input_dim = input_dim
-        self.time_dim = time_dim
-        self.fc = nn.Linear(input_dim, time_dim, bias=False)
-
-    def forward(self, x):
-        x = self.fc(x)
-        return x
-
-    def l2_regularization(self, alpha=1):
-        return alpha * torch.norm(self.fc.weight, p=2)
-
-
-class FmriNormEncoder(nn.Module):
-    def __init__(
-        self,
-        input_dim=1024,
-        time_dim=256,
-        scale=1,
-    ):
-        super().__init__()
-        self.input_dim = input_dim
-        self.time_dim = time_dim
-        self.fc = nn.utils.weight_norm(
-            nn.Linear(input_dim, time_dim, bias=False),
-            name="weight",
-            dim=0,
-        )
-        self.scale = nn.Parameter(torch.Tensor([scale]))
-
-    def forward(self, x):
-        x = self.scale * self.fc(x)
         return x
 
 
